@@ -5,5 +5,5 @@ model = gensim.models.KeyedVectors.load_word2vec_format('GoogleNews-vectors-nega
 
 vocab = model.vocab.keys()
 
-i = model.vocab["for"]
+i = model.vocab["for"].index
 vector = model.vectors[i]
