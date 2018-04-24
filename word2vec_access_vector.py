@@ -22,7 +22,6 @@ def data_word2vec():
                 idx = int(model.vocab[word_list[j]].index)
                 mat[j,:] = model.vectors[idx]
             else:
-                print('not valid word!')
                 mat[j,:] = -1 #not valid word vector
 
         mat = mat[~np.all(mat == -1, axis=1)]  #delete non valid vectors

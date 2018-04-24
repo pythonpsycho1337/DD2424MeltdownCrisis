@@ -1,3 +1,6 @@
 *.bin
 *.bin.gz
+*.npy
 .idea/*
+__pycache__/*
+
