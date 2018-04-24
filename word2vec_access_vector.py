@@ -1,9 +1,9 @@
 import gensim
-from data_preprocessing import *
+import data_preprossesing as pr
 import numpy as np
 
 def data_word2vec():
-    data = load_data_and_labels('datasets/rt-polaritydata/rt-polarity.neg', 'datasets/rt-polaritydata/rt-polarity.pos')
+    data = pr.load_data_and_labels('datasets/rt-polaritydata/rt-polarity.neg', 'datasets/rt-polaritydata/rt-polarity.pos')
     sentences = data[0]
 
     # Load Google's pre-trained Word2Vec model.
@@ -31,3 +31,5 @@ def data_word2vec():
     np.save('Google_Wordvec', word_vectors)
 
     return word_vectors
+
+wordvec = data_word2vec()
