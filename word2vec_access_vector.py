@@ -1,9 +1,11 @@
 import gensim
-from data_preprocessing import *
+import data_preprocessing as pr
 import numpy as np
+from Parameters import *
 
+#convert input data to word vector representation using word2vec trained Google model
 def data_word2vec():
-    data = load_data_and_labels('datasets/rt-polaritydata/rt-polarity.neg', 'datasets/rt-polaritydata/rt-polarity.pos')
+    data = pr.load_data_and_labels('datasets/rt-polaritydata/rt-polarity.neg', 'datasets/rt-polaritydata/rt-polarity.pos')
     sentences = data[0]
 
     # Load Google's pre-trained Word2Vec model.
@@ -28,6 +30,50 @@ def data_word2vec():
         mat = mat[~np.all(mat == -1, axis=1)]  #delete non valid vectors
         word_vectors.append(mat)
 
-    np.save('Google_Wordvec', word_vectors)
+    np.save('Google_Wordvec', word_vectors) #save vector representations
+    np.save('labels', data[1])  #save labels to file
 
     return word_vectors
+
+#load files with vectors and labels and split into training and testing
+def load_data(filename_vec, filename_labels):
+
+    vectors = np.load(filename_vec)
+    labels = np.load(filename_labels)
+
+    #find maximum sentence size
+    sizes = []
+    for i in range(len(vectors)):
+        sizes.append(vectors[i].shape[0])
+    max_dim = max(sizes)
+
+    #zero padding each matrix to the maximum height
+    vector_dim = vectors[0].shape[1]
+    for i in range(len(vectors)):
+        res = max_dim - vectors[i].shape[0]
+        z = np.zeros((res, vector_dim))
+        vectors[i] = np.vstack((vectors[i], z))
+
+    #data shuffling
+    data_size = len(labels)
+    indx = np.random.randint(data_size, size=data_size)
+    vectors = vectors[indx]
+    labels = labels[indx]
+
+    #split into training and testing
+    train_size = int(TRAIN_PERCENT * data_size)
+    train_vectors = vectors[0:train_size]
+    train_labels = labels[0:train_size]
+    test_vectors = vectors[train_size:]
+    test_labels = labels[train_size:]
+
+
+    return [train_vectors, train_labels, test_vectors, test_labels]
+
+
+
+
+
+
+
+
