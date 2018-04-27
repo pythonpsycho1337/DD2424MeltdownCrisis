@@ -65,6 +65,7 @@ def load_data(filename_vec, filename_labels):
        vectors[i] = np.reshape(vectors[i],(num_elements))
 
     flatten_vectors = np.vstack(vectors)
+    flatten_vectors = np.float32(flatten_vectors)
 
     #split into training and testing
     train_size = int(TRAIN_PERCENT * data_size)

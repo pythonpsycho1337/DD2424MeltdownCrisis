@@ -11,16 +11,18 @@ tf.logging.set_verbosity(tf.logging.INFO)
 
 # Our application logic will be added here
 def cnn_model_fn(features, labels, mode):
-  """Model function for CNN."""  #input image size (46,100) - one channel
+  """Model function for CNN."""  #input image size (46,300) - one channel
   # Input Layer
   dim_x = 46  #max sentence size
-  dim_y = features['x'].shape[0]  #wordvec dimensions
-  input_layer = tf.reshape(features, [-1, dim_x, dim_y, 1])
+  dim_y = 300  #wordvec dimensions
+  input_layer = tf.reshape(features, [-1, dim_x, dim_y, 1]) #-1 corresponds to the batch, 1 corresponds to the channel used
 
   # Convolutional Layer - one for each filter size
   filter_sizes = [(3, dim_y), (4, dim_y), (5, dim_y)]
   pooled_output = []
 
+  #define each group of filters
+  conv_output = []
   for size in filter_sizes:
 
       conv = tf.layers.conv2d(
@@ -30,46 +32,49 @@ def cnn_model_fn(features, labels, mode):
           padding="same",
           activation=tf.nn.relu)
 
-      # Pooling Layer #1
-      pool1 = tf.layers.max_pooling2d(inputs=conv, pool_size=[2, 2], strides=2)
+      conv_output.append(conv)
 
-      # Dense Layer,
-      pool2_flat = tf.reshape(pool1, [-1, 23 * 50 * 3])
-      dense = tf.layers.dense(inputs=pool2_flat, units=1024, activation=tf.nn.relu)
-      dropout = tf.layers.dropout(
-          inputs=dense, rate=0.5, training=mode == tf.estimator.ModeKeys.TRAIN)  #dropout rate
 
-      # Logits Layer
-      logits = tf.layers.dense(inputs=dropout, units=2)   #two classes (positive and negative)
+  #concatenate the filter output
+  concat_output = tf.concat(conv_output, 3)  #size=(100,46,300,300)
 
-      predictions = {
-          # Generate predictions (for PREDICT and EVAL mode)
-          "classes": tf.argmax(input=logits, axis=1),
-          # Add `softmax_tensor` to the graph. It is used for PREDICT and by the
-          # `logging_hook`.
-          "probabilities": tf.nn.softmax(logits, name="softmax_tensor")
-      }
+  #max over time pooling
+  pooling_output = tf.nn.max_pool(concat_output, ksize=[1,46, 1, 1],
+                    strides=[1, 1, 1, 1],
+                    padding='VALID',
+                    name="pool")
 
-      if mode == tf.estimator.ModeKeys.PREDICT:
-        return tf.estimator.EstimatorSpec(mode=mode, predictions=predictions)
 
-      # Calculate Loss (for both TRAIN and EVAL modes)
-      loss = tf.losses.sparse_softmax_cross_entropy(labels=labels, logits=logits)
+ # Dense Layer,
 
-      # Configure the Training Op (for TRAIN mode)
-      if mode == tf.estimator.ModeKeys.TRAIN:
-        optimizer = tf.train.GradientDescentOptimizer(learning_rate=0.001)
-        train_op = optimizer.minimize(
-            loss=loss,
-            global_step=tf.train.get_global_step())
-        return tf.estimator.EstimatorSpec(mode=mode, loss=loss, train_op=train_op)
+  dense = tf.layers.dense(inputs=pool2_flat, units=1024, activation=tf.nn.relu)
+  dropout = tf.layers.dropout(
+      inputs=dense, rate=0.5, training=mode == tf.estimator.ModeKeys.TRAIN)  #dropout rate
 
-      # Add evaluation metrics (for EVAL mode)
-      eval_metric_ops = {
-          "accuracy": tf.metrics.accuracy(
-              labels=labels, predictions=predictions["classes"])}
-      return tf.estimator.EstimatorSpec(
-          mode=mode, loss=loss, eval_metric_ops=eval_metric_ops)
+  # Logits Layer
+  logits = tf.layers.dense(inputs=dropout, units=2)   #two classes (positive and negative)
+
+  if mode == tf.estimator.ModeKeys.PREDICT:
+    return tf.estimator.EstimatorSpec(mode=mode, predictions=predictions)
+
+  # Calculate Loss (for both TRAIN and EVAL modes)
+  loss = tf.losses.sparse_softmax_cross_entropy(labels=labels, logits=logits)
+
+  # Configure the Training Op (for TRAIN mode)
+  if mode == tf.estimator.ModeKeys.TRAIN:
+    optimizer = tf.train.GradientDescentOptimizer(learning_rate=0.001)
+    train_op = optimizer.minimize(
+        loss=loss,
+        global_step=tf.train.get_global_step())
+    return tf.estimator.EstimatorSpec(mode=mode, loss=loss, train_op=train_op)
+
+  # Add evaluation metrics (for EVAL mode)
+  eval_metric_ops = {
+      "accuracy": tf.metrics.accuracy(
+          labels=labels, predictions=predictions["classes"])}
+
+  return tf.estimator.EstimatorSpec(
+      mode=mode, loss=loss, eval_metric_ops=eval_metric_ops)
 
 
 def main(unused_argv):
@@ -93,7 +98,7 @@ def main(unused_argv):
 
   # Train the model
   train_input_fn = tf.estimator.inputs.numpy_input_fn(
-      x={"x": train_features},
+      x= train_features,
       y=train_labels,
       batch_size=100,
       num_epochs=None,
@@ -105,7 +110,7 @@ def main(unused_argv):
 
   # Evaluate the model and print results
   eval_input_fn = tf.estimator.inputs.numpy_input_fn(
-      x={"x": test_features},
+      x={test_features},
       y=test_labels,
       num_epochs=1,
       shuffle=False)
