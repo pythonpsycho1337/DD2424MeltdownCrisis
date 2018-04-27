@@ -54,8 +54,22 @@ def cnn_model_fn(features, labels, mode):
   # Logits Layer
   logits = tf.layers.dense(inputs=dropout, units=2, activation=tf.nn.softmax)   #two classes (positive and negative)
 
-  b=logits.eval()
-  a=logits
+
+
+  loss = tf.losses.sparse_softmax_cross_entropy(labels=labels[:,0], logits=logits[:,0])
+
+  # Add evaluation metrics (for EVAL mode)
+  predictions = {
+      # Generate predictions (for PREDICT and EVAL mode)
+      "classes": tf.argmax(input=logits, axis=2),
+      # Add `softmax_tensor` to the graph. It is used for PREDICT and by the
+      # `logging_hook`.
+      "probabilities": tf.nn.softmax(logits, name="softmax_tensor")
+  }
+
+  eval_metric_ops = {
+      "accuracy": tf.metrics.accuracy(
+          labels=labels, predictions=predictions["classes"])}
 
   return tf.estimator.EstimatorSpec(
       mode=mode, loss=loss, eval_metric_ops=eval_metric_ops)
