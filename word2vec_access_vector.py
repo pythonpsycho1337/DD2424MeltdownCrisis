@@ -60,11 +60,17 @@ def load_data(filename_vec, filename_labels):
     vectors = vectors[indx]
     labels = labels[indx]
 
+    num_elements = vectors[0].shape[0] * vectors[0].shape[1]
+    for i in range(vectors.size):
+       vectors[i] = np.reshape(vectors[i],(num_elements))
+
+    flatten_vectors = np.vstack(vectors)
+
     #split into training and testing
     train_size = int(TRAIN_PERCENT * data_size)
-    train_vectors = vectors[0:train_size]
+    train_vectors = flatten_vectors[0:train_size]
     train_labels = labels[0:train_size]
-    test_vectors = vectors[train_size:]
+    test_vectors = flatten_vectors[train_size:]
     test_labels = labels[train_size:]
 
 
