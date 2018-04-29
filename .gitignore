@@ -1,3 +1,4 @@
+datasets/*
 *.bin
 *.bin.gz
 *.npy
