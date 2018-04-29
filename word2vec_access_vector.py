@@ -41,6 +41,16 @@ def load_data(filename_vec, filename_labels):
     vectors = np.load(filename_vec)
     labels = np.load(filename_labels)
 
+    #transform labels to 1 column from 2 columns (labels is 0 or 1)
+    labels_vec = np.zeros((labels.shape[0]))
+    for i in range(labels.shape[0]):
+        if (labels[i,0] != 0):
+            labels_vec[i] = 0
+        else:
+            labels_vec[i] = 1
+
+    labels = labels_vec.astype(int)
+
     #find maximum sentence size
     sizes = []
     for i in range(len(vectors)):

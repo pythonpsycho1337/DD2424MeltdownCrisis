@@ -56,24 +56,33 @@ def cnn_model_fn(features, labels, mode):
 
 
 
-  loss = tf.losses.sparse_softmax_cross_entropy(labels=labels[:,0], logits=logits[:,0])
+  loss = tf.losses.sparse_softmax_cross_entropy(labels=labels, logits=logits)
 
-  # Add evaluation metrics (for EVAL mode)
+  #prediction MODE
   predictions = {
       # Generate predictions (for PREDICT and EVAL mode)
-      "classes": tf.argmax(input=logits, axis=2),
+      "classes": tf.argmax(input=logits, axis=1),
       # Add `softmax_tensor` to the graph. It is used for PREDICT and by the
       # `logging_hook`.
       "probabilities": tf.nn.softmax(logits, name="softmax_tensor")
   }
+  if mode == tf.estimator.ModeKeys.PREDICT:
+      return tf.estimator.EstimatorSpec(mode=mode, predictions=predictions)
 
+   # Configure the Training Op (for TRAIN mode)
+  if mode == tf.estimator.ModeKeys.TRAIN:
+      optimizer = tf.train.GradientDescentOptimizer(learning_rate=0.001)
+      train_op = optimizer.minimize(
+          loss=loss,
+          global_step=tf.train.get_global_step())
+      return tf.estimator.EstimatorSpec(mode=mode, loss=loss, train_op=train_op)
+
+  # Add evaluation metrics (for EVAL mode)
   eval_metric_ops = {
       "accuracy": tf.metrics.accuracy(
           labels=labels, predictions=predictions["classes"])}
-
   return tf.estimator.EstimatorSpec(
       mode=mode, loss=loss, eval_metric_ops=eval_metric_ops)
-
 
 def main(unused_argv):
 
