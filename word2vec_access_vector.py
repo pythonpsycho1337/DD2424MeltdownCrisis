@@ -15,6 +15,9 @@ def data_word2vec_SST():
                        'datasets/stanfordSentimentTreebank/sentiment_labels.txt')
     return data_word2vec(data)
 
+def data_word2vec_Twitter():
+    data = pr.load_SST('datasets/Twitter2017-4A-English/TwitterData')
+    return data_word2vec(data)
 
 def data_word2vec(data):
     sentences = data[0]
@@ -99,7 +102,8 @@ def load_data(filename_vec, filename_labels):
 
 if __name__ == "__main__":
     #data_word2vec_MR()
-    data_word2vec_SST()
+    #data_word2vec_SST()
+    data_word2vec_Twitter()
 
 
 

@@ -86,5 +86,9 @@ def load_SST(sentencesFile,datasetSplitFile,labelsFile):
     y = np.concatenate([positive_labels, negative_labels], 0)
     return [x_text, y]
 
+def load_twitter(twitterFile):
+
+    return
+
 if __name__ == "__main__":
     load_SST()
