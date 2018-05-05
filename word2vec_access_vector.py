@@ -4,14 +4,27 @@ import numpy as np
 from Parameters import *
 
 #convert input data to word vector representation using word2vec trained Google model
-def data_word2vec():
-    data = pr.load_data_and_labels('datasets/rt-polaritydata/rt-polarity.neg', 'datasets/rt-polaritydata/rt-polarity.pos')
+def data_word2vec_MR():
+    data = pr.load_data_and_labels('datasets/rt-polaritydata/rt-polarity.neg',
+                                   'datasets/rt-polaritydata/rt-polarity.pos')
+    return data_word2vec(data)
+
+def data_word2vec_SST():
+    data = pr.load_SST('datasets/stanfordSentimentTreebank/datasetSentences.txt',
+                        'datasets/stanfordSentimentTreebank/datasetSplit.txt',
+                       'datasets/stanfordSentimentTreebank/sentiment_labels.txt')
+    return data_word2vec(data)
+
+def data_word2vec_Twitter():
+    data = pr.load_SST('datasets/Twitter2017-4A-English/TwitterData')
+    return data_word2vec(data)
+
+def data_word2vec(data):
     sentences = data[0]
 
     # Load Google's pre-trained Word2Vec model.
     model = gensim.models.KeyedVectors.load_word2vec_format('GoogleNews-vectors-negative300.bin', binary=True)
     vocab_size = model.vector_size  #vector size is 300 (num of words used from google vocabulary)
-
 
     #generate word vector representation of our data
     word_vectors = [] #list of all word2vec representations
@@ -87,7 +100,10 @@ def load_data(filename_vec, filename_labels):
 
     return [train_vectors, train_labels, test_vectors, test_labels]
 
-
+if __name__ == "__main__":
+    #data_word2vec_MR()
+    #data_word2vec_SST()
+    data_word2vec_Twitter()
 
 
 
