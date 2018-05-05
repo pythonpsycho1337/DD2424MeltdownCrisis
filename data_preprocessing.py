@@ -1,5 +1,6 @@
 import numpy as np
 import re
+import os
 import itertools
 from collections import Counter
 
@@ -48,7 +49,7 @@ def load_data_and_labels(positive_data_file, negative_data_file):
 def clean_str(string):
     """
     Tokenization/string cleaning for all datasets except for SST.
-    Original taken from https://github.com/yoonkim/CNN_sentence/blob/master/process_data.py
+    Inspired by https://github.com/yoonkim/CNN_sentence/blob/master/process_data.py
     """
     string = re.sub(r"[^A-Za-z0-9(),!?\'\`]", " ", string)
     string = re.sub(r"\'s", " \'s", string)
@@ -63,6 +64,8 @@ def clean_str(string):
     string = re.sub(r"\)", " \) ", string)
     string = re.sub(r"\?", " \? ", string)
     string = re.sub(r"\s{2,}", " ", string)
+    string = re.sub('"', '', string)
+
     return string.strip().lower()
 
 
@@ -81,14 +84,34 @@ def load_SST(sentencesFile,datasetSplitFile,labelsFile):
     sentences = [clean_str(sentence) for sentence in sentences]
 
     # Generate labels
-    positive_labels = [[0, 1] for _ in positive_examples]
-    negative_labels = [[1, 0] for _ in negative_examples]
-    y = np.concatenate([positive_labels, negative_labels], 0)
-    return [x_text, y]
+    #positive_labels = [[0, 1] for _ in positive_examples]
+    #negative_labels = [[1, 0] for _ in negative_examples]
+    #y = np.concatenate([positive_labels, negative_labels], 0)
+    #return [x_text, y]
 
-def load_twitter(twitterFile):
+def load_twitter(fileName,includeNeutral=True):
+    twitterFile = open(fileName,"r")
+    data = []
+    translationDict = {'negative':0,'positive':1,'neutral':2}
+    lines = twitterFile.readlines()
+    for i in range(0,len(lines)):
+        dict = {}
+        index = lines[i].find("\t")
+        lines[i] = lines[i][index+1:]
 
-    return
+        labelIndex = lines[i].find("\t")
+        label = translationDict[lines[i][:labelIndex]]
+        if (includeNeutral == False and label == 2):
+            continue
+        dict['label'] =label
+
+        lines[i] = lines[i][labelIndex+1:]
+        lines[i] = clean_str(lines[i])
+        dict['sentence'] = lines[i]
+
+        data.append(dict)
+
+    return data
 
 if __name__ == "__main__":
-    load_SST()
+    load_twitter(os.path.join(os.getcwd(),"datasets","Twitter2017-4A-English","TwitterData.txt"),False)
