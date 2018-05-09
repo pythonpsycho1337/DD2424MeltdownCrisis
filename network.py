@@ -3,14 +3,13 @@ from __future__ import division
 from __future__ import print_function
 
 import tensorflow as tf
-import word2vec_access_vector as wordvec
 import Parameters as param
 
 tf.logging.set_verbosity(tf.logging.INFO)
 
+#basic CNN network with one channel
+def cnn_basic(features, labels, mode):
 
-# Our application logic will be added here
-def cnn_model_fn(features, labels, mode):
   """Model function for CNN."""  #input image size (46,300) - one channel
   # Input Layer
   max_sentence_size = 46  #max sentence size
@@ -36,9 +35,7 @@ def cnn_model_fn(features, labels, mode):
 
       layer_output.append(pooling)
 
-      # concatenate the filter output
-
-
+  # concatenate the filter output
   concat_output = tf.concat(layer_output, 1)
   sum_filter_sizes = sum(param.FILTER_SIZES)
   reshape_output = tf.reshape(concat_output, [-1, sum_filter_sizes * vocab_size * param.NUM_FILTERS])
@@ -87,50 +84,4 @@ def cnn_model_fn(features, labels, mode):
 
   return tf.estimator.EstimatorSpec(mode=mode, loss=loss, eval_metric_ops=eval_metric_ops)
 
-
-def main(unused_argv):
-
-  # Load data (training and testing)
-  data = wordvec.load_data('Google_Wordvec.npy', 'labels.npy')
-  train_features = data[0]
-  train_labels = data[1]
-  test_features = data[2]
-  test_labels = data[3]
-
-  # Create the Estimator
-  mnist_classifier = tf.estimator.Estimator(
-      model_fn=cnn_model_fn, model_dir="/tmp/model4")
-
-  # Set up logging for predictions
-  # Log the values in the "Softmax" tensor with label "probabilities"
-  tensors_to_log = {"probabilities": "softmax_tensor"}
-  logging_hook = tf.train.LoggingTensorHook(
-      tensors=tensors_to_log, every_n_iter=1)
-
-  # Train the model
-  train_input_fn = tf.estimator.inputs.numpy_input_fn(
-      x= {'x':train_features},
-      y=train_labels,
-      batch_size=param.BATCH_SIZE,
-      num_epochs=param.EPOCHS,
-      shuffle=True)
-
-  mnist_classifier.train(
-      input_fn=train_input_fn,
-      steps=param.STEPS,
-      hooks=[logging_hook])
-
-  # Evaluate the model and print results
-  eval_input_fn = tf.estimator.inputs.numpy_input_fn(
-      x={'x':test_features},
-      y=test_labels,
-      num_epochs=1,
-      shuffle=False)
-  eval_results = mnist_classifier.evaluate(input_fn=eval_input_fn)
-
-  print(eval_results)
-
-
-if __name__ == "__main__":
-    tf.app.run()
 

@@ -1,5 +1,5 @@
 import gensim
-import data_preprocessing as pr
+from preprocessing import data_preprocessing as pr
 import numpy as np
 from Parameters import *
 
@@ -83,11 +83,18 @@ def load_data(filename_vec, filename_labels):
     vectors = vectors[indx]
     labels = labels[indx]
 
-    num_elements = vectors[0].shape[0] * vectors[0].shape[1]
-    for i in range(vectors.size):
-       vectors[i] = np.reshape(vectors[i],(num_elements))
 
-    flatten_vectors = np.vstack(vectors)
+    num_elements = vectors[0].shape[0] * vectors[0].shape[1]
+    flatten_vectors = np.empty((vectors.size,  num_elements))
+
+    for i in range(vectors.size):
+        flatten_vectors[i] = np.reshape(vectors[i],(num_elements))
+
+    #***** leads to memory error
+    #flatten_vectors = np.vstack(vectors)
+
+
+
     flatten_vectors = np.float32(flatten_vectors)
 
     #split into training and testing
