@@ -113,5 +113,6 @@ def load_twitter(fileName,includeNeutral=True):
 
     return data
 
+
 if __name__ == "__main__":
     load_twitter(os.path.join(os.getcwd(),"datasets","Twitter2017-4A-English","TwitterData.txt"),False)
