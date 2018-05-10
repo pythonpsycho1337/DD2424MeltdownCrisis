@@ -15,7 +15,7 @@ tf.logging.set_verbosity(tf.logging.INFO)
 def main(execution_mode): #train or test
 
   # Load data (training and testing)
-  data = wordvec.load_data('preprocessing/wordvectors/Google_Wordvec.npy', 'preprocessing/wordvectors/labels.npy')
+  data = wordvec.load_data('preprocessing/wordvectors_polarity/Google_Wordvec.npy', 'preprocessing/wordvectors_polarity/labels.npy')
   train_features = data[0]
   train_labels = data[1]
   test_features = data[2]
