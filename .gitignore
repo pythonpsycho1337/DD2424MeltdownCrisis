@@ -3,4 +3,5 @@
 *.npy
 .idea/*
 __pycache__/*
-
+preprocessing/__pycache__/*
+ckpt/*
