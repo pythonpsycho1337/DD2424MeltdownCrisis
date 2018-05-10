@@ -42,15 +42,12 @@ def cnn_basic(features, labels, mode):
 
   # Dense Layer for the dropout,
   dense = tf.layers.dense(inputs=reshape_output, units=param.DENSE_UNITS, activation=tf.nn.relu,
-                            activity_regularizer=tf.contrib.layers.l2_regularizer(3.0))
+                          activity_regularizer=tf.contrib.layers.l2_regularizer(3.0))
   dropout = tf.layers.dropout(
-        inputs=dense, rate=param.DROPOUT, training=mode == tf.estimator.ModeKeys.TRAIN)  # dropout rate
+      inputs=dense, rate=param.DROPOUT, training=mode == tf.estimator.ModeKeys.TRAIN)  # dropout rate
 
   # Logits Layer
   logits = tf.layers.dense(inputs=dropout, units=2, activation=tf.nn.softmax)  # two classes (positive and negative)
-
-  loss = tf.losses.sparse_softmax_cross_entropy(labels=labels, logits=logits)
-
 
   # prediction MODE
   predictions = {
@@ -61,7 +58,7 @@ def cnn_basic(features, labels, mode):
         "probabilities": tf.nn.softmax(logits, name="softmax_tensor")
   }
   if mode == tf.estimator.ModeKeys.PREDICT:
-        return tf.estimator.EstimatorSpec(mode=mode, predictions=predictions)
+      return tf.estimator.EstimatorSpec(mode=mode, predictions=predictions)
 
 
   # adaptive learning rate - exponential decay
@@ -71,17 +68,24 @@ def cnn_basic(features, labels, mode):
 
   # Configure the Training Op (for TRAIN mode)
   if mode == tf.estimator.ModeKeys.TRAIN:
-        optimizer = tf.train.AdadeltaOptimizer(learning_rate=adaptive_learning_rate, rho=param.RHO)
-        train_op = optimizer.minimize(
+
+      loss = tf.losses.sparse_softmax_cross_entropy(labels=labels, logits=logits)
+
+      optimizer = tf.train.AdadeltaOptimizer(learning_rate=adaptive_learning_rate, rho=param.RHO)
+      train_op = optimizer.minimize(
             loss=loss,
             global_step=tf.train.get_global_step())
-        return tf.estimator.EstimatorSpec(mode=mode, loss=loss, train_op=train_op)
 
-    # Add evaluation metrics (for EVAL mode)
-  eval_metric_ops = {
+      return tf.estimator.EstimatorSpec(mode=mode, loss=loss, train_op=train_op)
+
+      # Configure the Training Op (for EVAL mode)
+  else: # mode == tf.estimator.ModeKeys.EVAL:
+
+      loss = tf.losses.sparse_softmax_cross_entropy(labels=labels, logits=logits)
+      eval_metric_ops = {
         "accuracy": tf.metrics.accuracy(
             labels=labels, predictions=predictions["classes"])}
 
-  return tf.estimator.EstimatorSpec(mode=mode, loss=loss, eval_metric_ops=eval_metric_ops)
+      return tf.estimator.EstimatorSpec(mode=mode, loss=loss, eval_metric_ops=eval_metric_ops)
 
 
