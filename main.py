@@ -21,7 +21,6 @@ def main(execution_mode): #train or test
   test_features = data[2][:100,:]
   test_labels = data[3][:100]
 
-
   classifier = train((train_features,train_labels), 'ckpt')
   test_network(classifier,(test_features, test_labels), 'ckpt')
 
