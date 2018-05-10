@@ -93,19 +93,29 @@ def load_data(filename_vec, filename_labels):
     #***** leads to memory error
     #flatten_vectors = np.vstack(vectors)
 
-
-
     flatten_vectors = np.float32(flatten_vectors)
 
-    #split into training and testing
-    train_size = int(TRAIN_PERCENT * data_size)
-    train_vectors = flatten_vectors[0:train_size]
-    train_labels = labels[0:train_size]
-    test_vectors = flatten_vectors[train_size:]
-    test_labels = labels[train_size:]
+    return splitData(flatten_vectors,labels,0.1,0.1);
 
+def splitData(data,labels,testPercent,validationPercent):
+    # Split data into training,validation and test
+    # data is the flattened vectors
+    examples = data.shape[0]
+    testLim = int((1-testPercent) * examples)
+    testData = data[testLim:]
+    testLabels = labels[testLim:]
+    data = data[:testLim]
+    labels = labels[:testLim]
 
-    return [train_vectors, train_labels, test_vectors, test_labels]
+    examples = data.shape[0]
+    validationLim = int((1 - validationPercent) * examples)
+    validationData = data[validationLim:]
+    validationLabels = labels[validationLim:]
+    trainingData = data[:validationLim]
+    trainingLabels = labels[:validationLim]
+
+    return [trainingData, trainingLabels, validationData, validationLabels, testData, testLabels]
+
 
 if __name__ == "__main__":
     #data_word2vec_MR()

@@ -39,6 +39,9 @@ def train(traindata, dir):
         steps=param.STEPS,
         hooks=[logging_hook])
 
+
+    return text_classifier
+
     # Evaluate the model and print results  #todo create validation set!
     #eval_input_fn = tf.estimator.inputs.numpy_input_fn(
     #    x={'x': validation_features},
