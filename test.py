@@ -5,6 +5,7 @@ from __future__ import print_function
 from network import *
 from Parameters import *
 import tensorflow as tf
+import numpy as np
 
 
 tf.logging.set_verbosity(tf.logging.INFO)
@@ -24,9 +25,15 @@ def test_network( testdata, dir):
         shuffle=False)
 
     predictions = list(classifier.predict(input_fn=test_input_fn))
-    predicted_classes = [p["classes"] for p in predictions]
+    np.save('predictions', predictions)
 
-    print(
-        "New Samples, Class Predictions:    {}\n"
-            .format(predicted_classes))
+    #measure the accuracy on the test set calling the EVALUATE function
+    eval_input_fn = tf.estimator.inputs.numpy_input_fn(
+        x={'x': test_features},
+        y=test_labels,
+        num_epochs=1,
+        shuffle=False)
+    accuracy_score = classifier.evaluate(input_fn=eval_input_fn)["accuracy"]
+    np.save('testing_accuracy', accuracy_score)
 
+    print("\nAccuracy on test set: {0:f}\n".format(accuracy_score))

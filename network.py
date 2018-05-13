@@ -8,7 +8,7 @@ import Parameters as param
 tf.logging.set_verbosity(tf.logging.INFO)
 
 #basic CNN network with one channel
-def cnn_basic(features, labels, mode):
+def cnn_basic(features, labels, mode, params):
 
   """Model function for CNN."""  #input image size (46,300) - one channel
   # Input Layer
@@ -57,6 +57,7 @@ def cnn_basic(features, labels, mode):
         # `logging_hook`.
         "probabilities": tf.nn.softmax(logits, name="softmax_tensor")
   }
+
   if mode == tf.estimator.ModeKeys.PREDICT:
       return tf.estimator.EstimatorSpec(mode=mode, predictions=predictions)
 

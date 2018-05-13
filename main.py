@@ -16,18 +16,20 @@ def main():
 
   # Load data (training and testing)
   data = wordvec.load_data('preprocessing/wordvectors_polarity/Google_Wordvec.npy', 'preprocessing/wordvectors_polarity/labels.npy')
-  train_features = data[0][:100,:]
-  train_labels = data[1][:100]
-  test_features = data[2][:100,:]
-  test_labels = data[3][:100]
+  trainingData = data[0]
+  trainingLabels = data[1]
+  validationData = data[2]
+  validationLabels = data[3]
+  testData = data[4]
+  testLabels = data[5]
 
-
-  train((train_features,train_labels), 'ckpt')
-  test_network((test_features, test_labels), 'ckpt')
+  train((trainingData,trainingLabels), (validationData,validationLabels), 'ckpt')
+  test_network((testData,  testLabels), 'ckpt')
 
 
 if __name__ == "__main__":
     #tf.app.run()
     main()
+
 
 
