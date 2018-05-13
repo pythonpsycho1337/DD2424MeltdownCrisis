@@ -21,10 +21,10 @@ def main():
         print("Could not find data for the dataset "+dataset)
     #dataset takes values "MR" or "Twitter"
     data = wordvec.load_data(wordvecPath,labelsPath)
-    train_features = data[0][:100,:]
-    train_labels = data[1][:100]
-    test_features = data[2][:100,:]
-    test_labels = data[3][:100]
+    train_features = data[0]
+    train_labels = data[1]
+    test_features = data[2]
+    test_labels = data[3]
 
     print("succesfully loaded "+dataset+" dataset")
     train((train_features,train_labels), 'ckpt')
@@ -32,6 +32,6 @@ def main():
 
 
 if __name__ == "__main__":
-    main("MR")
+    main()
 
 
