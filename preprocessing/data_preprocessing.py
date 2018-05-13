@@ -122,6 +122,7 @@ def load_twitter(fileName,includeNeutral=True):
         lines[i] = clean_str(lines[i])
         sentences.append(lines[i])
 
+    labels = np.asarray(labels)
     return [sentences,labels]
 
 

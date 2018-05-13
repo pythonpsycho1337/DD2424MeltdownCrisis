@@ -22,8 +22,10 @@ def data_word2vec_SST():
 def data_word2vec_Twitter(includeNeutral):
     #Done
     path = os.path.join(os.getcwd(), "datasets", "Twitter2017-4A-English", "TwitterData.txt")
-    data = pr.load_twitter(path,includeNeutral)
-    return data_word2vec(data,"Twitter")
+    [sentences, labels] = pr.load_twitter(path,includeNeutral)
+    wordVecs = data_word2vec(sentences)
+    saveWordVecsAndLabels(wordVecs, labels, 'Twitter')
+    return wordVecs
 
 def data_word2vec(sentences):
     #sentences: input list of form list
