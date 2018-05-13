@@ -17,8 +17,8 @@ def main():
     elif dataset=="Twitter":
         wordvecPath = "preprocessing/wordvectors_twitter/wordVecTwitter.npy"
         labelsPath = "preprocessing/wordvectors_twitter/labelsTwitter.npy"
-    else
-   	print("Could not find data for the dataset "+dataset)
+    else:
+        print("Could not find data for the dataset "+dataset)
     #dataset takes values "MR" or "Twitter"
     data = wordvec.load_data(wordvecPath,labelsPath)
     train_features = data[0][:100,:]
