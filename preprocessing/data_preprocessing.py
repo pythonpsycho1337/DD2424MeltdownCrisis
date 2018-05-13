@@ -1,8 +1,6 @@
 import numpy as np
 import re
 import os
-import itertools
-from collections import Counter
 
 # ---------- preprossesing of rt-polaritydata -----------#
 def clean_str(string):
@@ -45,7 +43,6 @@ def load_data_and_labels(positive_data_file, negative_data_file):
     y = np.concatenate([positive_labels, negative_labels], 0)
     return [x_text, y]
 
-# ---------- Preprossesing of SST -----------#
 def clean_str(string):
     """
     Tokenization/string cleaning for all datasets except for SST.
@@ -72,6 +69,7 @@ def clean_str(string):
 def load_SST(sentencesFile,datasetSplitFile,labelsFile):
     """
     Loads SST polarity data from files
+    NOT DONE
     """
     # Load data from files
     sentences = list(open(sentencesFile, "r").readlines())
@@ -90,28 +88,30 @@ def load_SST(sentencesFile,datasetSplitFile,labelsFile):
     #return [x_text, y]
 
 def load_twitter(fileName,includeNeutral=True):
+    #Load the twitter data
     twitterFile = open(fileName,"r")
-    data = []
+    sentences = []
+    labels = []
     translationDict = {'negative':0,'positive':1,'neutral':2}
     lines = twitterFile.readlines()
     for i in range(0,len(lines)):
-        dict = {}
+        # Remove id
         index = lines[i].find("\t")
         lines[i] = lines[i][index+1:]
 
+        # Extract label
         labelIndex = lines[i].find("\t")
         label = translationDict[lines[i][:labelIndex]]
         if (includeNeutral == False and label == 2):
             continue
-        dict['label'] =label
+        labels.append(label)
 
+        # Extract sentence
         lines[i] = lines[i][labelIndex+1:]
         lines[i] = clean_str(lines[i])
-        dict['sentence'] = lines[i]
+        sentences.append(lines[i])
 
-        data.append(dict)
-
-    return data
+    return [sentences,labels]
 
 
 if __name__ == "__main__":
