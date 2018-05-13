@@ -23,9 +23,8 @@ def data_word2vec_Twitter(includeNeutral):
     data = pr.load_twitter(path,includeNeutral)
     return data_word2vec(data,"Twitter")
 
-def data_word2vec(data,datasetName):
-    # data
-    sentences = data[0]
+def data_word2vec(sentences,datasetName):
+    #sentences: input list of form list
 
     # Load Google's pre-trained Word2Vec model.
     model = gensim.models.KeyedVectors.load_word2vec_format('GoogleNews-vectors-negative300.bin', binary=True)
@@ -50,25 +49,13 @@ def data_word2vec(data,datasetName):
         word_vectors.append(mat)
 
     np.save('Wordvec'+datasetName, word_vectors) #save vector representations
-    np.save('labels'+datasetName, data[1])  #save labels to file
 
     return word_vectors
-
 
 def load_data(filename_vec, filename_labels):
     # load files with vectors and labels and split into training and testing
     vectors = np.load(filename_vec)
     labels = np.load(filename_labels)
-
-    #transform labels to 1 column from 2 columns (labels is 0 or 1)
-    labels_vec = np.zeros((labels.shape[0]))
-    for i in range(labels.shape[0]):
-        if (labels[i,0] != 0):
-            labels_vec[i] = 0
-        else:
-            labels_vec[i] = 1
-
-    labels = labels_vec.astype(int)
 
     #find maximum sentence size
     sizes = []
@@ -77,6 +64,7 @@ def load_data(filename_vec, filename_labels):
     max_dim = max(sizes)
 
     #zero padding each matrix to the maximum height
+    #each element of vectors is a matrix (max_sentence_length, vocabulary_length)
     vector_dim = vectors[0].shape[1]
     for i in range(len(vectors)):
         res = max_dim - vectors[i].shape[0]
@@ -89,7 +77,7 @@ def load_data(filename_vec, filename_labels):
     vectors = vectors[indx]
     labels = labels[indx]
 
-
+    #transform list of arrays into a matrix (number of reviews, max_sentence_length * vocabulary_length)
     num_elements = vectors[0].shape[0] * vectors[0].shape[1]
     flatten_vectors = np.empty((vectors.size,  num_elements))
 
@@ -98,7 +86,7 @@ def load_data(filename_vec, filename_labels):
 
     flatten_vectors = np.float32(flatten_vectors)
 
-    return splitData(flatten_vectors,labels,0.1,0.1);
+    return splitData(flatten_vectors,labels,0.1,0.1)
 
 def splitData(data,labels,testPercent,validationPercent):
     # Split data into training,validation and test

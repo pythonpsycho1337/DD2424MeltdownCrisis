@@ -40,17 +40,20 @@ def train(traindata, dir):
         hooks=[logging_hook])
 
 
+   # # Evaluate the model and print results  #todo create validation set!
+   # eval_input_fn = tf.estimator.inputs.numpy_input_fn(
+   #     x={'x': validation_features},
+   #     y=validation_labels,
+   #     num_epochs=1,
+   #     shuffle=False)
+##
+   # #eval_results = text_classifier.evaluate(input_fn=eval_input_fn)["accuracy"]
+##
+   # # Evaluate accuracy.
+   # accuracy_score = text_classifier.evaluate(input_fn=eval_input_fn)["accuracy"]
+#
+   # print("\nValidation Accuracy: {0:f}\n".format(accuracy_score))
+#
     return text_classifier
-
-    # Evaluate the model and print results  #todo create validation set!
-    #eval_input_fn = tf.estimator.inputs.numpy_input_fn(
-    #    x={'x': validation_features},
-    #    y=validation_labels,
-    #    num_epochs=1,
-    #    shuffle=False)
-#
-    #eval_results = text_classifier.evaluate(input_fn=eval_input_fn)
-#
-    #print(eval_results)
 #
 

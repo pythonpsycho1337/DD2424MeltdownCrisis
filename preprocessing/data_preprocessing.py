@@ -40,8 +40,20 @@ def load_data_and_labels(positive_data_file, negative_data_file):
     # Generate labels
     positive_labels = [[0, 1] for _ in positive_examples]
     negative_labels = [[1, 0] for _ in negative_examples]
-    y = np.concatenate([positive_labels, negative_labels], 0)
-    return [x_text, y]
+    y_onehot = np.concatenate([positive_labels, negative_labels], 0)
+
+    # transform labels to 1 column from 2 columns (labels is 0 or 1)
+    labels_vec = np.zeros(( y_onehot.shape[0]))
+    for i in range( y_onehot.shape[0]):
+        if ( y_onehot[i, 0] != 0):
+            labels_vec[i] = 0
+        else:
+            labels_vec[i] = 1
+
+    labels = labels_vec.astype(int)
+    np.save('labels', labels)  # save labels to file
+
+    return [x_text, labels]
 
 def clean_str(string):
     """
@@ -115,4 +127,5 @@ def load_twitter(fileName,includeNeutral=True):
 
 
 if __name__ == "__main__":
-    load_twitter(os.path.join(os.getcwd(),"datasets","Twitter2017-4A-English","TwitterData.txt"),False)
+    #load_twitter(os.path.join(os.getcwd(),"datasets","Twitter2017-4A-English","TwitterData.txt"),False)
+    load_data_and_labels('datasets/rt-polaritydata/rt-polarity.pos','datasets/rt-polaritydata/rt-polarity.neg' )
