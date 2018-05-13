@@ -7,8 +7,8 @@ import os
 def data_word2vec_MR():
     path1 = os.path.join(os.getcwd(),"datasets","rt-polaritydata","rt-polarity.neg")
     path2 = os.path.join(os.getcwd(), "datasets", "rt-polaritydata", "rt-polarity.pos")
-    data = pr.load_data_and_labels(path1,path2)
-    return data_word2vec(data,"MR")
+    [sentences,labels] = pr.load_data_and_labels(path1,path2)
+    return data_word2vec(sentences,"MR")
 
 def data_word2vec_SST():
     #Not done
@@ -33,7 +33,7 @@ def data_word2vec(sentences,datasetName):
     #generate word vector representation of our data
     word_vectors = [] #list of all word2vec representations
     for i in range(len(sentences)):
-        print()
+        print("%.2f%%" % (i/len(sentences)*100))
         word_list = sentences[i].split(" ")
         mat = np.zeros((len(word_list), vocab_size)) #mat representation of each sentence
         for j in range(len(word_list)):
@@ -42,7 +42,7 @@ def data_word2vec(sentences,datasetName):
                 idx = int(model.vocab[word_list[j]].index)
                 mat[j,:] = model.vectors[idx]
             else:
-                print('not valid word!')
+                #print('not valid word!')
                 mat[j,:] = -1 #not valid word vector
 
         mat = mat[~np.all(mat == -1, axis=1)]  #delete non valid vectors
