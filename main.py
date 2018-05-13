@@ -8,21 +8,26 @@ from test import *
 
 tf.logging.set_verbosity(tf.logging.INFO)
 
-def main():
-  # Load data (training and testing)
-  data = wordvec.load_data('preprocessing/wordvectors_polarity/Google_Wordvec.npy', 'preprocessing/wordvectors_polarity/labels.npy')
-  train_features = data[0][:100,:]
-  train_labels = data[1][:100]
-  test_features = data[2][:100,:]
-  test_labels = data[3][:100]
+def main(dataset):
+    if dataset=="MR":
+        wordvecPath = "preprocessing/wordvectors_polarity/wordVecMR.npy"
+        labelsPath = "preprocessing/wordvectors_polarity/labelsMR.npy"
+    elif dataset=="Twitter":
+        wordvecPath = "preprocessing/wordvectors_twitter/wordVecTwitter.npy"
+        labelsPath = "preprocessing/wordvectors_twitter/labelsTwitter.npy"
+    #dataset takes values "MR" or "Twitter"
+    data = wordvec.load_data(wordvecPath,labelsPath)
+    train_features = data[0][:100,:]
+    train_labels = data[1][:100]
+    test_features = data[2][:100,:]
+    test_labels = data[3][:100]
 
 
-  train((train_features,train_labels), 'ckpt')
-  test_network((test_features, test_labels), 'ckpt')
+    train((train_features,train_labels), 'ckpt')
+    test_network((test_features, test_labels), 'ckpt')
 
 
 if __name__ == "__main__":
-    #tf.app.run()
-    main()
+    main("MR")
 
 
