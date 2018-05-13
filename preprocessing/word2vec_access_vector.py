@@ -8,7 +8,9 @@ def data_word2vec_MR():
     path1 = os.path.join(os.getcwd(),"datasets","rt-polaritydata","rt-polarity.neg")
     path2 = os.path.join(os.getcwd(), "datasets", "rt-polaritydata", "rt-polarity.pos")
     [sentences,labels] = pr.load_data_and_labels(path1,path2)
-    return data_word2vec(sentences,"MR")
+    wordVecs = data_word2vec(sentences)
+    saveWordVecsAndLabels(wordVecs,labels,'MR')
+    return wordVecs
 
 def data_word2vec_SST():
     #Not done
@@ -23,7 +25,7 @@ def data_word2vec_Twitter(includeNeutral):
     data = pr.load_twitter(path,includeNeutral)
     return data_word2vec(data,"Twitter")
 
-def data_word2vec(sentences,datasetName):
+def data_word2vec(sentences):
     #sentences: input list of form list
 
     # Load Google's pre-trained Word2Vec model.
@@ -47,8 +49,6 @@ def data_word2vec(sentences,datasetName):
 
         mat = mat[~np.all(mat == -1, axis=1)]  #delete non valid vectors
         word_vectors.append(mat)
-
-    np.save('Wordvec'+datasetName, word_vectors) #save vector representations
 
     return word_vectors
 
@@ -87,6 +87,10 @@ def load_data(filename_vec, filename_labels):
     flatten_vectors = np.float32(flatten_vectors)
 
     return splitData(flatten_vectors,labels,0.1,0.1)
+
+def saveWordVecsAndLabels(wordVecs,labels,name):
+    np.save('wordVec'+name, wordVecs)  # save wordVecs to file
+    np.save('labels'+name, labels)  # save labels to file
 
 def splitData(data,labels,testPercent,validationPercent):
     # Split data into training,validation and test

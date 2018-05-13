@@ -51,7 +51,6 @@ def load_data_and_labels(positive_data_file, negative_data_file):
             labels_vec[i] = 1
 
     labels = labels_vec.astype(int)
-    np.save('labels', labels)  # save labels to file
 
     return [x_text, labels]
 
