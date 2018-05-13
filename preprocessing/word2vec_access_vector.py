@@ -1,24 +1,31 @@
 import gensim
 from preprocessing import data_preprocessing as pr
 import numpy as np
-from Parameters import *
+import os
 
 #convert input data to word vector representation using word2vec trained Google model
 def data_word2vec_MR():
-    data = pr.load_data_and_labels('datasets/rt-polaritydata/rt-polarity.neg',
-                                   'datasets/rt-polaritydata/rt-polarity.pos')
-    return data_word2vec(data)
+    path1 = os.path.join(os.getcwd(),"datasets","rt-polaritydata","rt-polarity.neg")
+    path2 = os.path.join(os.getcwd(), "datasets", "rt-polaritydata", "rt-polarity.pos")
+    [sentences,labels] = pr.load_data_and_labels(path1,path2)
+    wordVecs = data_word2vec(sentences)
+    saveWordVecsAndLabels(wordVecs,labels,'MR')
+    return wordVecs
 
 def data_word2vec_SST():
+    #Not done
     data = pr.load_SST('datasets/stanfordSentimentTreebank/datasetSentences.txt',
                         'datasets/stanfordSentimentTreebank/datasetSplit.txt',
                        'datasets/stanfordSentimentTreebank/sentiment_labels.txt')
     return data_word2vec(data)
 
-def data_word2vec_Twitter():
-    data = pr.load_SST('datasets/Twitter2017-4A-English/TwitterData')
-    return data_word2vec(data)
-
+def data_word2vec_Twitter(includeNeutral):
+    #Done
+    path = os.path.join(os.getcwd(), "datasets", "Twitter2017-4A-English", "TwitterData.txt")
+    [sentences, labels] = pr.load_twitter(path,includeNeutral)
+    wordVecs = data_word2vec(sentences)
+    saveWordVecsAndLabels(wordVecs, labels, 'Twitter')
+    return wordVecs
 
 def data_word2vec(sentences):
     #sentences: input list of form list
@@ -30,6 +37,7 @@ def data_word2vec(sentences):
     #generate word vector representation of our data
     word_vectors = [] #list of all word2vec representations
     for i in range(len(sentences)):
+        print("%.2f%%" % (i/len(sentences)*100))
         word_list = sentences[i].split(" ")
         mat = np.zeros((len(word_list), vocab_size)) #mat representation of each sentence
         for j in range(len(word_list)):
@@ -38,19 +46,16 @@ def data_word2vec(sentences):
                 idx = int(model.vocab[word_list[j]].index)
                 mat[j,:] = model.vectors[idx]
             else:
-                print('not valid word!')
+                #print('not valid word!')
                 mat[j,:] = -1 #not valid word vector
 
         mat = mat[~np.all(mat == -1, axis=1)]  #delete non valid vectors
         word_vectors.append(mat)
 
-    np.save('Google_Wordvec', word_vectors) #save vector representations
-
     return word_vectors
 
-#load files with word vectors and labels and split into training, validation and testing
 def load_data(filename_vec, filename_labels):
-
+    # load files with vectors and labels and split into training and testing
     vectors = np.load(filename_vec)
     labels = np.load(filename_labels)
 
@@ -85,6 +90,10 @@ def load_data(filename_vec, filename_labels):
 
     return splitData(flatten_vectors,labels,0.1,0.1)
 
+def saveWordVecsAndLabels(wordVecs,labels,name):
+    np.save('wordVec'+name, wordVecs)  # save wordVecs to file
+    np.save('labels'+name, labels)  # save labels to file
+
 def splitData(data,labels,testPercent,validationPercent):
     # Split data into training,validation and test
     # data is the flattened vectors
@@ -106,7 +115,7 @@ def splitData(data,labels,testPercent,validationPercent):
 
 
 if __name__ == "__main__":
-    #data_word2vec_MR()
+    data = data_word2vec_MR()
     #data_word2vec_SST()
     data_word2vec_Twitter()
 

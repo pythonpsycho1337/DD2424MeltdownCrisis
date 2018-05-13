@@ -11,8 +11,11 @@ tf.logging.set_verbosity(tf.logging.INFO)
 def cnn_basic(features, labels, mode, params):
 
   """Model function for CNN."""  #input image size (46,300) - one channel
+  feature_shape = features['x'].get_shape()
+  feature_width = feature_shape[1].value
   # Input Layer
-  max_sentence_size = 46  #max sentence size
+  max_sentence_size =int(feature_width/ 300)	  #max sentence size
+  print('max sentence size: ', max_sentence_size)
   vocab_size = 300  #wordvec dimensions
   input_layer = tf.reshape(features['x'], [-1, max_sentence_size, vocab_size, 1]) #-1 corresponds to the batch (dynamicallly calculated), 1 corresponds to the channel used
 
@@ -71,7 +74,7 @@ def cnn_basic(features, labels, mode, params):
   if mode == tf.estimator.ModeKeys.TRAIN:
 
       loss = tf.losses.sparse_softmax_cross_entropy(labels=labels, logits=logits)
-
+      #print("Loss:"+str(loss))
       optimizer = tf.train.AdadeltaOptimizer(learning_rate=adaptive_learning_rate, rho=param.RHO)
       train_op = optimizer.minimize(
             loss=loss,
