@@ -10,7 +10,7 @@ from test import *
 tf.logging.set_verbosity(tf.logging.INFO)
 
 def main():
-    dataset = sys.argv[1]
+    dataset = "MR"
     if dataset=="MR":
         wordvecPath = "preprocessing/wordvectors_polarity/wordVecMR.npy"
         labelsPath = "preprocessing/wordvectors_polarity/labelsMR.npy"

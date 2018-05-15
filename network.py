@@ -17,7 +17,9 @@ def cnn_basic(features, labels, mode, params):
   max_sentence_size =int(feature_width/ 300)	  #max sentence size
   print('max sentence size: ', max_sentence_size)
   vocab_size = 300  #wordvec dimensions
-  input_layer = tf.reshape(features['x'], [-1, max_sentence_size, vocab_size, 1]) #-1 corresponds to the batch (dynamicallly calculated), 1 corresponds to the channel used
+
+  input = tf.get_variable("input", initializer=features['x'], validate_shape=False, trainable=True)
+  input_layer = tf.reshape(input, [-1, max_sentence_size, vocab_size, 1])
 
   #define each group of filters
   layer_output = []
@@ -74,6 +76,7 @@ def cnn_basic(features, labels, mode, params):
   if mode == tf.estimator.ModeKeys.TRAIN:
 
       loss = tf.losses.sparse_softmax_cross_entropy(labels=labels, logits=logits)
+      tf.summary.histogram("trainingLoss", loss)
       #print("Loss:"+str(loss))
       optimizer = tf.train.AdadeltaOptimizer(learning_rate=adaptive_learning_rate, rho=param.RHO)
       train_op = optimizer.minimize(
@@ -86,6 +89,7 @@ def cnn_basic(features, labels, mode, params):
   else: # mode == tf.estimator.ModeKeys.EVAL:
 
       loss = tf.losses.sparse_softmax_cross_entropy(labels=labels, logits=logits)
+      tf.summary.histogram("trainingLoss", loss)
       eval_metric_ops = {
         "accuracy": tf.metrics.accuracy(
             labels=labels, predictions=predictions["classes"])}
