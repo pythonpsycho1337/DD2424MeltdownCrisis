@@ -6,6 +6,7 @@ from network import *
 from Parameters import *
 import tensorflow as tf
 import numpy as np
+from network import *
 
 
 tf.logging.set_verbosity(tf.logging.INFO)

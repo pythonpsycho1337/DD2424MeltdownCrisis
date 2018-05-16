@@ -3,11 +3,9 @@ from __future__ import division
 from __future__ import print_function
 
 import preprocessing.word2vec_access_vector as wordvec
+from train import train
 import sys
-from train import *
-from test import *
-
-tf.logging.set_verbosity(tf.logging.INFO)
+#from testing_env import hyperparameter_optimization
 
 def main():
     dataset = "MR"
@@ -23,12 +21,15 @@ def main():
     data = wordvec.load_data(wordvecPath,labelsPath)
     train_features = data[0]
     train_labels = data[1]
-    test_features = data[2]
-    test_labels = data[3]
+    val_features = data[2]
+    val_labels = data[3]
+    test_features = data[4]
+    test_labels = data[5]
 
     print("succesfully loaded "+dataset+" dataset")
-    train((train_features,train_labels), 'ckpt')
-    test_network((test_features, test_labels), 'ckpt')
+   # hyperparameter_optimization(data, 'filter_size', {'start':0, 'end':10}, 'ckpt')
+    val_accuracy = train((train_features,train_labels), (val_features,val_labels), 'ckpt')
+    #test_network((test_features, test_labels), 'ckpt')
 
 
 if __name__ == "__main__":

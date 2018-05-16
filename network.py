@@ -3,9 +3,12 @@ from __future__ import division
 from __future__ import print_function
 
 import tensorflow as tf
-import Parameters as param
+from testing_env import network_params
+from Parameters import training_params
+
 
 tf.logging.set_verbosity(tf.logging.INFO)
+
 
 #basic CNN network with one channel
 def cnn_basic(features, labels, mode, params):
@@ -18,16 +21,17 @@ def cnn_basic(features, labels, mode, params):
   print('max sentence size: ', max_sentence_size)
   vocab_size = 300  #wordvec dimensions
 
-  input = tf.get_variable("input", initializer=features['x'], validate_shape=False, trainable=True)
-  input_layer = tf.reshape(input, [-1, max_sentence_size, vocab_size, 1])
+  #input_variable = tf.get_variable("input_variable", initializer=features['x'], validate_shape=False, trainable=False)
+  input_layer = tf.reshape(features['x'], [-1, max_sentence_size, vocab_size, 1])
+
 
   #define each group of filters
   layer_output = []
-  for filter_height in param.FILTER_SIZES:
+  for filter_height in network_params.FILTER_SIZES:
 
       conv = tf.layers.conv2d(
           inputs=input_layer,
-          filters=param.NUM_FILTERS,
+          filters=network_params.NUM_FILTERS,
           kernel_size = (filter_height, vocab_size), #width of filter equals to the wordvec dimension
           padding="same",
           activation=tf.nn.relu)
@@ -42,14 +46,14 @@ def cnn_basic(features, labels, mode, params):
 
   # concatenate the filter output
   concat_output = tf.concat(layer_output, 1)
-  sum_filter_sizes = sum(param.FILTER_SIZES)
-  reshape_output = tf.reshape(concat_output, [-1, sum_filter_sizes * vocab_size * param.NUM_FILTERS])
+  sum_filter_sizes = sum(network_params.FILTER_SIZES)
+  reshape_output = tf.reshape(concat_output, [-1, sum_filter_sizes * vocab_size * network_params.NUM_FILTERS])
 
   # Dense Layer for the dropout,
-  dense = tf.layers.dense(inputs=reshape_output, units=param.DENSE_UNITS, activation=tf.nn.relu,
+  dense = tf.layers.dense(inputs=reshape_output, units=network_params.DENSE_UNITS, activation=tf.nn.relu,
                           activity_regularizer=tf.contrib.layers.l2_regularizer(3.0))
   dropout = tf.layers.dropout(
-      inputs=dense, rate=param.DROPOUT, training=mode == tf.estimator.ModeKeys.TRAIN)  # dropout rate
+      inputs=dense, rate=training_params.DROPOUT, training=mode == tf.estimator.ModeKeys.TRAIN)  # dropout rate
 
   # Logits Layer
   logits = tf.layers.dense(inputs=dropout, units=2, activation=tf.nn.softmax)  # two classes (positive and negative)
@@ -69,8 +73,8 @@ def cnn_basic(features, labels, mode, params):
 
   # adaptive learning rate - exponential decay
   global_step = tf.Variable(0, trainable=False)
-  adaptive_learning_rate = tf.train.exponential_decay(param.LEARNING_RATE_INIT, global_step,
-                                                        100, param.LEARNING_DECAY, staircase=True)
+  adaptive_learning_rate = tf.train.exponential_decay(training_params.LEARNING_RATE_INIT, global_step,
+                                                        100, training_params.LEARNING_DECAY, staircase=True)
 
   # Configure the Training Op (for TRAIN mode)
   if mode == tf.estimator.ModeKeys.TRAIN:
@@ -78,9 +82,19 @@ def cnn_basic(features, labels, mode, params):
       loss = tf.losses.sparse_softmax_cross_entropy(labels=labels, logits=logits)
       tf.summary.histogram("trainingLoss", loss)
       #print("Loss:"+str(loss))
-      optimizer = tf.train.AdadeltaOptimizer(learning_rate=adaptive_learning_rate, rho=param.RHO)
+
+      #create list of tf.Variables from input param
+      trainable_list = []
+      for dict in params:
+          with tf.variable_scope(dict['scope'], reuse=tf.AUTO_REUSE):
+            var = tf.get_variable(dict['name'], dict['shape'], dict['dtype'])
+          trainable_list.append(var)
+
+
+      optimizer = tf.train.AdadeltaOptimizer(learning_rate=adaptive_learning_rate, rho=network_params.RHO)
       train_op = optimizer.minimize(
             loss=loss,
+            var_list=trainable_list,
             global_step=tf.train.get_global_step())
 
       return tf.estimator.EstimatorSpec(mode=mode, loss=loss, train_op=train_op)
