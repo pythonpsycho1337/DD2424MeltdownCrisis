@@ -8,8 +8,8 @@ class TextCNN(object):
     Uses an embedding layer, followed by a convolutional, max-pooling and softmax layer.
     """
     def __init__(
-      self, vocab_size, max_sentence_size,
-            sequence_length, num_classes, vocab_size,
+      self, vocab_size, max_sentence_size,num_classes
+            sequence_length, , vocab_size,
       embedding_size, filter_sizes, num_filters, l2_reg_lambda=0.0):
 
         # Placeholders for input, output and dropout
