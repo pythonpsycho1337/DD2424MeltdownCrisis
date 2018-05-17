@@ -1,6 +1,9 @@
+'''
+data_preprocessing.py - Preprocess different datasets
+'''
+
 import numpy as np
 import re
-import os
 
 # ---------- preprossesing of rt-polaritydata -----------#
 def clean_str(string):

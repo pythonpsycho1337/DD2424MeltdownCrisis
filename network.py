@@ -1,10 +1,14 @@
+'''
+network.py - Defines the network structure
+'''
+
 from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
 import tensorflow as tf
 
-tf.logging.set_verbosity(tf.logging.INFO)
+#tf.logging.set_verbosity(tf.logging.INFO)
 
 #basic CNN network with one channel
 def cnn_basic(features, labels, mode, params):

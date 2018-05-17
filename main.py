@@ -1,9 +1,12 @@
+'''
+main.py - Runs the experiments for parameter exploration
+'''
+
 from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
 import preprocessing.word2vec_access_vector as wordvec
-import sys
 from train import *
 from test import *
 import os,re

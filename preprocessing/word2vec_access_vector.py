@@ -1,8 +1,11 @@
-import gensim
-from preprocessing import data_preprocessing as pr
-import numpy as np
-import os
+'''
+word2vec_access_vector.py - Generate word vectors from sentences and load data
+'''
 
+import numpy as np
+import os,gensim
+
+from preprocessing import data_preprocessing as pr
 #convert input data to word vector representation using word2vec trained Google model
 def data_word2vec_MR():
     path1 = os.path.join(os.getcwd(),"datasets","rt-polaritydata","rt-polarity.neg")
@@ -95,7 +98,7 @@ def saveWordVecsAndLabels(wordVecs,labels,name):
     np.save('labels'+name, labels)  # save labels to file
 
 def splitData(data,labels,testPercent,validationPercent):
-    # Split data into training,validation and test
+    # Split data into training,validation and test sets
     # data is the flattened vectors
     examples = data.shape[0]
     testLim = int((1-testPercent) * examples)

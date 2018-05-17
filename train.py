@@ -3,10 +3,9 @@ from __future__ import division
 from __future__ import print_function
 
 import numpy as np
-from network import *
 import tensorflow as tf
-from network import *
 
+import network
 
 def train(trainingSet, validationSet,modelDir,params):
     # Create the Estimator
@@ -14,7 +13,7 @@ def train(trainingSet, validationSet,modelDir,params):
         session_config=tf.ConfigProto(log_device_placement=True))
 
     text_classifier = tf.estimator.Estimator(
-        model_fn=cnn_basic, model_dir=modelDir, config=run_config, params=params)
+        model_fn=network.cnn_basic, model_dir=modelDir, config=run_config, params=params)
 
     # Set up logging for predictions
     # Log the values in the "Softmax" tensor with label "probabilities"
@@ -51,9 +50,9 @@ def train(trainingSet, validationSet,modelDir,params):
     accuracy_score = text_classifier.evaluate(input_fn=eval_input_fn)["accuracy"]
     np.save('validation_accuracy', accuracy_score)
 
+    tf.summary.scalar("validationAcc",accuracy_score)
+
     print("\nValidation Accuracy: {0:f}\n".format(accuracy_score))
 
-
     return text_classifier
-#
 
