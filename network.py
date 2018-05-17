@@ -18,8 +18,7 @@ def cnn_basic(features, labels, mode, params):
   print('max sentence size: ', max_sentence_size)
   vocab_size = 300  #wordvec dimensions
 
-  input = tf.get_variable("input", initializer=features['x'], validate_shape=False, trainable=True)
-  input_layer = tf.reshape(input, [-1, max_sentence_size, vocab_size, 1])
+  input_layer = tf.reshape(features['x'], [-1, max_sentence_size, vocab_size, 1])
 
   #define each group of filters
   layer_output = []
