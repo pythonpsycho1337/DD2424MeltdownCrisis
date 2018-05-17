@@ -38,10 +38,14 @@ def paramsTodirName(params):
     regExPattern = '[A-Z]+'#Only keep capital letters in keys
     dir = ""
     for key in params['ModelParams'].keys():
-        dir += "".join(re.findall(regExPattern,key))+str(params['ModelParams'][key])
+        if key == "FilterSizes":
+            dir += "".join(re.findall(regExPattern,key))+"".join([str(i) for i in params['ModelParams'][key]])
+        else:
+            dir += "".join(re.findall(regExPattern,key))+str(params['ModelParams'][key])
 
     for key in params['TrainingParams'].keys():
         dir += "".join(re.findall(regExPattern,key))+str(params['TrainingParams'][key])
+
     return dir
 
 if __name__ == "__main__":
