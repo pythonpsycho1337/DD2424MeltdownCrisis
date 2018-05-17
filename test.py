@@ -21,7 +21,7 @@ def test_network( testSet, modelDir,params):
     #Create input tensor
     test_input_fn = tf.estimator.inputs.numpy_input_fn(
         x={'x': test_features},
-        num_epochs=1,
+        num_epochs=5,
         shuffle=False)
 
     predictions = list(classifier.predict(input_fn=test_input_fn))
@@ -31,7 +31,7 @@ def test_network( testSet, modelDir,params):
     eval_input_fn = tf.estimator.inputs.numpy_input_fn(
         x={'x': test_features},
         y=test_labels,
-        num_epochs=1,
+        num_epochs=5,
         shuffle=False)
     accuracy_score = classifier.evaluate(input_fn=eval_input_fn)["accuracy"]
     np.save(os.path.join(modelDir,'testing_accuracy'), accuracy_score)

@@ -29,7 +29,7 @@ def main():
 
     print("succesfully loaded "+dataset+" dataset")
 
-    trainingparams = {"TrainPercent":0.9,"LearningRateInit":0.1,"LearningDecay":0.95,"Dropout":0.5,"BatchSize":50,"Epochs":1,"Steps":1000}
+    trainingparams = {"TrainPercent":0.9,"LearningRateInit":0.1,"LearningDecay":0.95,"Dropout":0.5,"BatchSize":50,"Epochs":10,"Steps":300}
     modelParams = {"FilterSizes":[3, 4, 5],"NumFilters":100,"l2Reg":3,"DenseUnits":100,"Rho":0.9}
     params = {"TrainingParams":trainingparams,"ModelParams":modelParams}
     modelDir = os.path.join("ckpt",paramsTodirName(params))
