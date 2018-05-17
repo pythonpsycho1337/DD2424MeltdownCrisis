@@ -83,7 +83,7 @@ def cnn_basic(features, labels, mode, params):
   if mode == tf.estimator.ModeKeys.TRAIN:
 
       loss = tf.losses.sparse_softmax_cross_entropy(labels=labels, logits=logits)
-      tf.summary.histogram("trainingLoss", loss)
+      tf.summary.histogram("loss", loss)
       #print("Loss:"+str(loss))
       optimizer = tf.train.AdadeltaOptimizer(learning_rate=adaptive_learning_rate, rho=modelParams['Rho'])
       train_op = optimizer.minimize(
@@ -92,15 +92,16 @@ def cnn_basic(features, labels, mode, params):
 
       return tf.estimator.EstimatorSpec(mode=mode, loss=loss, train_op=train_op)
 
-      # Configure the Training Op (for EVAL mode)
-  else: # mode == tf.estimator.ModeKeys.EVAL:
+  # Configure the Training Op (for EVAL mode)
+  elif mode == tf.estimator.ModeKeys.EVAL:
 
       loss = tf.losses.sparse_softmax_cross_entropy(labels=labels, logits=logits)
-      tf.summary.histogram("validationLoss", loss)
+      tf.summary.histogram("loss", loss)
       eval_metric_ops = {
         "accuracy": tf.metrics.accuracy(
             labels=labels, predictions=predictions["classes"])}
 
       return tf.estimator.EstimatorSpec(mode=mode, loss=loss, eval_metric_ops=eval_metric_ops)
-
+  else:
+      print("WARNING: No mode specified for training")
 
