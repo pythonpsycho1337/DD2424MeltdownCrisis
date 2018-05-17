@@ -23,7 +23,8 @@ def main():
     #dataset takes values "MR" or "Twitter"
     # data, max_sentence_length = wordvec.load_data(wordvecPath,labelsPath)
     # unique_dict = wordvec.make_wordvec_dictionary(wordvecPath)
-    data, max_sentence_length = wordvec.load_word_dataset(dataPosPath, dataNegPath)
+    data, max_sentence_length, unique_word_dictionary = wordvec.load_word_dataset(dataPosPath, dataNegPath)
+    word2vec_dictionary = make_word2vec_dictionary(unique_word_dictionary)
     train_features = data[0]
     train_labels = data[1]
     val_features = data[2]

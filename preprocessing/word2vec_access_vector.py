@@ -56,14 +56,29 @@ def data_word2vec(sentences):
     return word_vectors
 
 def load_word_dataset(dataPosPath, dataNegPath):
+    #open word dataset
     data_x, labels = pr.load_data_and_labels(dataPosPath, dataNegPath)
+
+    #make list of lists of words of dataset
+    words = []
+    for x in data_x:
+        sentence_words = x.split(" ")
+        words.append(sentence_words)
+    unique_words = set([item for sublist in words for item in sublist])
+
+    unique_words_dict = {elem : i+1 for i,elem in enumerate(unique_words)}
 
     # Build vocabulary
     max_review_length = max([len(x.split(" ")) for x in data_x])
-    vocab_processor = learn.preprocessing.VocabularyProcessor(max_review_length)
+    vocab_processor = learn.preprocessing.VocabularyProcessor(max_document_length=max_review_length)#, vocabulary=unique_words_dict)
     x = np.array(list(vocab_processor.fit_transform(data_x)))
+    unique_words_dict = vocab_processor.vocabulary_._mapping
 
-    return (splitData(x, labels, 0.1, 0.1), max_review_length)
+    return (splitData(x, labels, 0.1, 0.1), max_review_length, unique_words_dict)
+
+def make_word2vec_dictionary(unique_word_dictionary):
+    return 5
+
 
 def make_wordvec_dictionary(filename_vec):
     sentences = np.load(filename_vec)
