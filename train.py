@@ -7,6 +7,7 @@ from __future__ import print_function
 
 import numpy as np
 import tensorflow as tf
+import os
 
 import network
 
@@ -51,7 +52,7 @@ def train(trainingSet, validationSet,modelDir,params):
 
     # Evaluate accuracy.
     accuracy_score = text_classifier.evaluate(input_fn=eval_input_fn)["accuracy"]
-    np.save('validation_accuracy', accuracy_score)
+    np.save(os.path.join(modelDir,'validation_accuracy'), accuracy_score)
 
     tf.summary.scalar("validationAcc",accuracy_score)
 
