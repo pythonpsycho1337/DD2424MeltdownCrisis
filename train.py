@@ -9,13 +9,17 @@ from network import *
 
 
 def train(trainingSet, validationSet,modelDir):
+    BatchSize = 50
+    numOfSteps = 5
+    #Set model parameters
+    modelParams = {"FilterSizes":[3, 4, 5],"NumFilters":100,"l2Reg":3,"DenseUnits":100,"Rho":0.9}
 
     # Create the Estimator
     run_config = tf.estimator.RunConfig(save_checkpoints_steps=STEPS).replace(
         session_config=tf.ConfigProto(log_device_placement=True))
 
     text_classifier = tf.estimator.Estimator(
-        model_fn=cnn_basic, model_dir=modelDir, config=run_config)
+        model_fn=cnn_basic, model_dir=modelDir, config=run_config, params=modelParams)
 
     # Set up logging for predictions
     # Log the values in the "Softmax" tensor with label "probabilities"
@@ -30,13 +34,13 @@ def train(trainingSet, validationSet,modelDir):
     train_input_fn = tf.estimator.inputs.numpy_input_fn(
         x={'x': train_features},
         y=train_labels,
-        batch_size=param.BATCH_SIZE,
-        num_epochs=param.EPOCHS,
+        batch_size=BatchSize,
+        num_epochs=1,
         shuffle=True)
 
     text_classifier.train(
         input_fn=train_input_fn,
-        steps=param.STEPS,
+        steps=numOfSteps,
         hooks=[logging_hook])
 
     # Evaluate the model on validation set and print results

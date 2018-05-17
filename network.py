@@ -3,12 +3,15 @@ from __future__ import division
 from __future__ import print_function
 
 import tensorflow as tf
-import Parameters as param
 
 tf.logging.set_verbosity(tf.logging.INFO)
 
 #basic CNN network with one channel
 def cnn_basic(features, labels, mode, params):
+
+  DROPOUT = 0.5
+  LEARNING_RATE_INIT = 0.1
+  LEARNING_DECAY = 0.95
 
   """Model function for CNN."""  #input image size (46,300) - one channel
   feature_shape = features['x'].get_shape()
@@ -22,11 +25,11 @@ def cnn_basic(features, labels, mode, params):
 
   #define each group of filters
   layer_output = []
-  for filter_height in param.FILTER_SIZES:
+  for filter_height in params['FilterSizes']:
 
       conv = tf.layers.conv2d(
           inputs=input_layer,
-          filters=param.NUM_FILTERS,
+          filters=params['NumFilters'],
           kernel_size = (filter_height, vocab_size), #width of filter equals to the wordvec dimension
           padding="same",
           activation=tf.nn.relu)
@@ -41,14 +44,14 @@ def cnn_basic(features, labels, mode, params):
 
   # concatenate the filter output
   concat_output = tf.concat(layer_output, 1)
-  sum_filter_sizes = sum(param.FILTER_SIZES)
-  reshape_output = tf.reshape(concat_output, [-1, sum_filter_sizes * vocab_size * param.NUM_FILTERS])
+  sum_filter_sizes = sum(params["FilterSizes"])
+  reshape_output = tf.reshape(concat_output, [-1, sum_filter_sizes * vocab_size * params['NumFilters']])
 
   # Dense Layer for the dropout,
-  dense = tf.layers.dense(inputs=reshape_output, units=param.DENSE_UNITS, activation=tf.nn.relu,
+  dense = tf.layers.dense(inputs=reshape_output, units=params['DenseUnits'], activation=tf.nn.relu,
                           activity_regularizer=tf.contrib.layers.l2_regularizer(3.0))
   dropout = tf.layers.dropout(
-      inputs=dense, rate=param.DROPOUT, training=mode == tf.estimator.ModeKeys.TRAIN)  # dropout rate
+      inputs=dense, rate=DROPOUT, training=mode == tf.estimator.ModeKeys.TRAIN)  # dropout rate
 
   # Logits Layer
   logits = tf.layers.dense(inputs=dropout, units=2, activation=tf.nn.softmax)  # two classes (positive and negative)
@@ -68,8 +71,8 @@ def cnn_basic(features, labels, mode, params):
 
   # adaptive learning rate - exponential decay
   global_step = tf.Variable(0, trainable=False)
-  adaptive_learning_rate = tf.train.exponential_decay(param.LEARNING_RATE_INIT, global_step,
-                                                        100, param.LEARNING_DECAY, staircase=True)
+  adaptive_learning_rate = tf.train.exponential_decay(LEARNING_RATE_INIT, global_step,
+                                                        100, LEARNING_DECAY, staircase=True)
 
   # Configure the Training Op (for TRAIN mode)
   if mode == tf.estimator.ModeKeys.TRAIN:
@@ -77,7 +80,7 @@ def cnn_basic(features, labels, mode, params):
       loss = tf.losses.sparse_softmax_cross_entropy(labels=labels, logits=logits)
       tf.summary.histogram("trainingLoss", loss)
       #print("Loss:"+str(loss))
-      optimizer = tf.train.AdadeltaOptimizer(learning_rate=adaptive_learning_rate, rho=param.RHO)
+      optimizer = tf.train.AdadeltaOptimizer(learning_rate=adaptive_learning_rate, rho=params['Rho'])
       train_op = optimizer.minimize(
             loss=loss,
             global_step=tf.train.get_global_step())

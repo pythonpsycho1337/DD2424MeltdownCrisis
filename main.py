@@ -7,7 +7,7 @@ import sys
 from train import *
 from test import *
 
-tf.logging.set_verbosity(tf.logging.INFO)
+#tf.logging.set_verbosity(tf.logging.INFO)
 
 def main():
     dataset = "MR"
