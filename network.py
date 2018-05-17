@@ -8,7 +8,7 @@ tf.logging.set_verbosity(tf.logging.INFO)
 
 #basic CNN network with one channel
 def cnn_basic(features, labels, mode, params):
-
+  modelParams = params['ModelParams']
   DROPOUT = 0.5
   LEARNING_RATE_INIT = 0.1
   LEARNING_DECAY = 0.95
@@ -25,11 +25,11 @@ def cnn_basic(features, labels, mode, params):
 
   #define each group of filters
   layer_output = []
-  for filter_height in params['FilterSizes']:
+  for filter_height in modelParams['FilterSizes']:
 
       conv = tf.layers.conv2d(
           inputs=input_layer,
-          filters=params['NumFilters'],
+          filters=modelParams['NumFilters'],
           kernel_size = (filter_height, vocab_size), #width of filter equals to the wordvec dimension
           padding="same",
           activation=tf.nn.relu)
@@ -44,11 +44,11 @@ def cnn_basic(features, labels, mode, params):
 
   # concatenate the filter output
   concat_output = tf.concat(layer_output, 1)
-  sum_filter_sizes = sum(params["FilterSizes"])
-  reshape_output = tf.reshape(concat_output, [-1, sum_filter_sizes * vocab_size * params['NumFilters']])
+  sum_filter_sizes = sum(modelParams["FilterSizes"])
+  reshape_output = tf.reshape(concat_output, [-1, sum_filter_sizes * vocab_size * modelParams['NumFilters']])
 
   # Dense Layer for the dropout,
-  dense = tf.layers.dense(inputs=reshape_output, units=params['DenseUnits'], activation=tf.nn.relu,
+  dense = tf.layers.dense(inputs=reshape_output, units=modelParams['DenseUnits'], activation=tf.nn.relu,
                           activity_regularizer=tf.contrib.layers.l2_regularizer(3.0))
   dropout = tf.layers.dropout(
       inputs=dense, rate=DROPOUT, training=mode == tf.estimator.ModeKeys.TRAIN)  # dropout rate
@@ -80,7 +80,7 @@ def cnn_basic(features, labels, mode, params):
       loss = tf.losses.sparse_softmax_cross_entropy(labels=labels, logits=logits)
       tf.summary.histogram("trainingLoss", loss)
       #print("Loss:"+str(loss))
-      optimizer = tf.train.AdadeltaOptimizer(learning_rate=adaptive_learning_rate, rho=params['Rho'])
+      optimizer = tf.train.AdadeltaOptimizer(learning_rate=adaptive_learning_rate, rho=modelParams['Rho'])
       train_op = optimizer.minimize(
             loss=loss,
             global_step=tf.train.get_global_step())

@@ -29,8 +29,11 @@ def main():
     test_labels = data[5]
 
     print("succesfully loaded "+dataset+" dataset")
-    train((train_features,train_labels),(val_features,val_labels), 'ckpt')
-    test_network((test_features, test_labels), 'ckpt')
+    modelParams = {"FilterSizes":[3, 4, 5],"NumFilters":100,"l2Reg":3,"DenseUnits":100,"Rho":0.9}
+    trainingparams ={}
+    params = {"TrainingParams":trainingparams,"ModelParams":modelParams}
+    train((train_features,train_labels),(val_features,val_labels), 'ckpt',params)
+    test_network((test_features, test_labels), 'ckpt',params)
 
 
 if __name__ == "__main__":

@@ -11,12 +11,12 @@ import numpy as np
 tf.logging.set_verbosity(tf.logging.INFO)
 
 #predict classes using loaded model
-def test_network( testdata, dir):
+def test_network( testSet, dir,params):
+    #params is a dictionary containing two dictionaries refered to by the keys modelParams and trainingParams
+    classifier = tf.estimator.Estimator(model_fn=cnn_basic, model_dir=dir, params=params)
 
-    classifier = tf.estimator.Estimator(model_fn=cnn_basic, model_dir=dir)
-
-    test_features = testdata[0]
-    test_labels = testdata[1]
+    test_features = testSet[0]
+    test_labels = testSet[1]
 
     #create input tensor
     test_input_fn = tf.estimator.inputs.numpy_input_fn(
