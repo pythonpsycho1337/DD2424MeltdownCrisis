@@ -10,11 +10,8 @@ from network import *
 
 
 def train(trainingSet, validationSet,modelDir,params):
-    BatchSize = 50
-    numOfSteps = 5
-
     # Create the Estimator
-    run_config = tf.estimator.RunConfig(save_checkpoints_steps=STEPS).replace(
+    run_config = tf.estimator.RunConfig(save_checkpoints_steps=params["TrainingParams"]["Steps"]).replace(
         session_config=tf.ConfigProto(log_device_placement=True))
 
     text_classifier = tf.estimator.Estimator(
@@ -33,13 +30,13 @@ def train(trainingSet, validationSet,modelDir,params):
     train_input_fn = tf.estimator.inputs.numpy_input_fn(
         x={'x': train_features},
         y=train_labels,
-        batch_size=BatchSize,
-        num_epochs=1,
+        batch_size=params["TrainingParams"]["BatchSize"],
+        num_epochs=params["TrainingParams"]["Epochs"],
         shuffle=True)
 
     text_classifier.train(
         input_fn=train_input_fn,
-        steps=numOfSteps,
+        steps=params["TrainingParams"]["Steps"],
         hooks=[logging_hook])
 
     # Evaluate the model on validation set and print results
@@ -48,7 +45,7 @@ def train(trainingSet, validationSet,modelDir,params):
     eval_input_fn = tf.estimator.inputs.numpy_input_fn(
         x={'x': validation_features},
         y=validation_labels,
-        num_epochs=1,
+        num_epochs=10,
         shuffle=False)
 
     # Evaluate accuracy.
