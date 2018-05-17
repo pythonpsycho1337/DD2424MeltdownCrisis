@@ -11,28 +11,7 @@ from Parameters import training_params
 from network import cnn_basic
 
 tf.reset_default_graph()
-def get_trainable_list(modeldir):
 
-    #load latest checkpoint file
-    #latest_ckpt_file = estimator_obj.latest_checkpoint()
-    checkpoint = tf.train.get_checkpoint_state(modeldir) #, latest_filename=latest_ckpt_file)
-    chosen_graph = 'ckpt/model.ckpt-14.meta'
-    with tf.Session() as sess:
-        saver = tf.train.import_meta_graph(chosen_graph)
-        saver.restore(sess, checkpoint.model_checkpoint_path)
-
-        trainable_vars = tf.get_collection(tf.GraphKeys.TRAINABLE_VARIABLES)
-
-        print('TRAINABLE VARIABLES!!!!')
-        print(trainable_vars)
-
-        #fd = open("vars.pkl","w")
-        #for var in trainable_vars:
-        #    fd.write(str(var))
-
-
-
-    return trainable_vars
 
 def train(train_set, validation_set, dir):
 
@@ -43,7 +22,7 @@ def train(train_set, validation_set, dir):
         session_config=tf.ConfigProto(log_device_placement=True))
 
     text_classifier = tf.estimator.Estimator(
-        model_fn=cnn_basic, model_dir=dir, config=run_config)
+        model_fn=cnn_basic, model_dir=dir, config=run_config, params=4)
 
 
     # Set up logging for predictions
@@ -69,10 +48,7 @@ def train(train_set, validation_set, dir):
         steps=training_params.STEPS,
         hooks=[logging_hook])
 
-    print('*****')
-    #print(text_classifier.latest_checkpoint())
-    #print(text_classifier.get_variable_names())
-    get_trainable_list(text_classifier, dir)
+
 
     # Evaluate the model on validation set and print results
     validation_features = validation_set[0]
