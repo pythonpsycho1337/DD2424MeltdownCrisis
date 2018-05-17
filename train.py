@@ -8,14 +8,14 @@ from Parameters import *
 from network import *
 
 
-def train(traindata, dir):
+def train(trainingSet, validationSet,modelDir):
 
     # Create the Estimator
     run_config = tf.estimator.RunConfig(save_checkpoints_steps=STEPS).replace(
         session_config=tf.ConfigProto(log_device_placement=True))
 
     text_classifier = tf.estimator.Estimator(
-        model_fn=cnn_basic, model_dir=dir, config=run_config)
+        model_fn=cnn_basic, model_dir=modelDir, config=run_config)
 
     # Set up logging for predictions
     # Log the values in the "Softmax" tensor with label "probabilities"
@@ -25,8 +25,8 @@ def train(traindata, dir):
 
 
     #create input tensor
-    train_features = traindata[0]
-    train_labels = traindata[1]
+    train_features = trainingSet[0]
+    train_labels = trainingSet[1]
     train_input_fn = tf.estimator.inputs.numpy_input_fn(
         x={'x': train_features},
         y=train_labels,
@@ -39,21 +39,22 @@ def train(traindata, dir):
         steps=param.STEPS,
         hooks=[logging_hook])
 
+    # Evaluate the model on validation set and print results
+    validation_features = validationSet[0]
+    validation_labels = validationSet[1]
+    eval_input_fn = tf.estimator.inputs.numpy_input_fn(
+        x={'x': validation_features},
+        y=validation_labels,
+        num_epochs=1,
+        shuffle=False)
 
-   # # Evaluate the model and print results  #todo create validation set!
-   # eval_input_fn = tf.estimator.inputs.numpy_input_fn(
-   #     x={'x': validation_features},
-   #     y=validation_labels,
-   #     num_epochs=1,
-   #     shuffle=False)
-##
-   # #eval_results = text_classifier.evaluate(input_fn=eval_input_fn)["accuracy"]
-##
-   # # Evaluate accuracy.
-   # accuracy_score = text_classifier.evaluate(input_fn=eval_input_fn)["accuracy"]
-#
-   # print("\nValidation Accuracy: {0:f}\n".format(accuracy_score))
-#
+    # Evaluate accuracy.
+    accuracy_score = text_classifier.evaluate(input_fn=eval_input_fn)["accuracy"]
+    np.save('validation_accuracy', accuracy_score)
+
+    print("\nValidation Accuracy: {0:f}\n".format(accuracy_score))
+
+
     return text_classifier
 #
 

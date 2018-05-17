@@ -88,7 +88,7 @@ def cnn_basic(features, labels, mode, params):
   else: # mode == tf.estimator.ModeKeys.EVAL:
 
       loss = tf.losses.sparse_softmax_cross_entropy(labels=labels, logits=logits)
-      tf.summary.histogram("trainingLoss", loss)
+      tf.summary.histogram("validationLoss", loss)
       eval_metric_ops = {
         "accuracy": tf.metrics.accuracy(
             labels=labels, predictions=predictions["classes"])}
