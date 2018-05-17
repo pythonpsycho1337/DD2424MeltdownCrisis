@@ -12,14 +12,15 @@ import tensorflow as tf
 
 #basic CNN network with one channel
 def cnn_basic(features, labels, mode, params):
-  modelParams = params['ModelParams']
-  DROPOUT = 0.5
-  LEARNING_RATE_INIT = 0.1
-  LEARNING_DECAY = 0.95
+  modelParams = params["ModelParams"]
+  DROPOUT = params["TrainingParams"]["Dropout"]
+  LEARNING_RATE_INIT = params["TrainingParams"]["LearningRateInit"]
+  LEARNING_DECAY = params["TrainingParams"]["LearningDecay"]
 
   """Model function for CNN."""  #input image size (46,300) - one channel
   feature_shape = features['x'].get_shape()
   feature_width = feature_shape[1].value
+
   # Input Layer
   max_sentence_size =int(feature_width/ 300)	  #max sentence size
   print('max sentence size: ', max_sentence_size)
