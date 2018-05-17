@@ -34,4 +34,4 @@ class Model_Parameters:
     def _set_num_filters(self, number):
         self.NUM_FILTERS = number
 
-
+network_params = Model_Parameters()

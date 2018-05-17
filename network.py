@@ -3,8 +3,9 @@ from __future__ import division
 from __future__ import print_function
 
 import tensorflow as tf
-from testing_env import network_params
 from Parameters import training_params
+from Parameters import network_params
+
 
 
 tf.logging.set_verbosity(tf.logging.INFO)

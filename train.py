@@ -16,7 +16,7 @@ def get_trainable_list(modeldir):
     #load latest checkpoint file
     #latest_ckpt_file = estimator_obj.latest_checkpoint()
     checkpoint = tf.train.get_checkpoint_state(modeldir) #, latest_filename=latest_ckpt_file)
-    chosen_graph = 'ckpt/model.ckpt-18.meta'
+    chosen_graph = 'ckpt/model.ckpt-21.meta'
     with tf.Session() as sess:
         saver = tf.train.import_meta_graph(chosen_graph)
         saver.restore(sess, checkpoint.model_checkpoint_path)
