@@ -111,7 +111,7 @@ def splitData(data,labels,testPercent,validationPercent):
     trainingData = data[:validationLim]
     trainingLabels = labels[:validationLim]
 
-    return [trainingData, trainingLabels, validationData, validationLabels, testData, testLabels]
+    return trainingData, trainingLabels, validationData, validationLabels, testData, testLabels
 
 
 if __name__ == "__main__":
