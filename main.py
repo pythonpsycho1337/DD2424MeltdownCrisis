@@ -28,8 +28,14 @@ def main():
     trainingparams = {"TrainPercent":0.9,"LearningRateInit":0.1,"LearningDecay":0.95,"Dropout":0.5,"BatchSize":50,"Epochs":5,"Steps":200}
     modelParams = {"FilterSizes":[3, 4, 5],"NumFilters":100,"l2Reg":3,"DenseUnits":100,"Rho":0.9}
     params = {"TrainingParams":trainingparams,"ModelParams":modelParams}
-    train((train_features,train_labels),(val_features,val_labels), 'ckpt',params)
-    test_network((test_features, test_labels), 'ckpt',params)
+    modelDir = os.join("ckpt",paramsTodirName(params))
+    train((train_features,train_labels),(val_features,val_labels), modelDir,params)
+    test_network((test_features, test_labels), modelDir,params)
+
+def paramsTodirName(params):
+    #Creates a unique dirname based on the parameters
+    dir = "FS"+",".join(params["ModelParams"]["FilterSizes"])
+    return dir
 
 
 if __name__ == "__main__":
