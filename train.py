@@ -5,7 +5,6 @@ from __future__ import print_function
 import numpy as np
 from network import *
 import tensorflow as tf
-from Parameters import *
 from network import *
 
 
