@@ -3,6 +3,7 @@ from __future__ import division
 from __future__ import print_function
 
 import preprocessing.word2vec_access_vector as wordvec
+
 from train import train
 import sys
 #from testing_env import hyperparameter_optimization
@@ -12,13 +13,17 @@ def main():
     if dataset=="MR":
         wordvecPath = "preprocessing/wordvectors_polarity/wordVecMR.npy"
         labelsPath = "preprocessing/wordvectors_polarity/labelsMR.npy"
+        dataPosPath = "preprocessing/wordvectors_polarity/rt-polarity.pos"
+        dataNegPath = "preprocessing/wordvectors_polarity/rt-polarity.neg"
     elif dataset=="Twitter":
         wordvecPath = "preprocessing/wordvectors_twitter/wordVecTwitter.npy"
         labelsPath = "preprocessing/wordvectors_twitter/labelsTwitter.npy"
     else:
         print("Could not find data for the dataset "+dataset)
     #dataset takes values "MR" or "Twitter"
-    data = wordvec.load_data(wordvecPath,labelsPath)
+    # data, max_sentence_length = wordvec.load_data(wordvecPath,labelsPath)
+    # unique_dict = wordvec.make_wordvec_dictionary(wordvecPath)
+    data, max_sentence_length = wordvec.load_word_dataset(dataPosPath, dataNegPath)
     train_features = data[0]
     train_labels = data[1]
     val_features = data[2]

@@ -2,6 +2,7 @@ import gensim
 from preprocessing import data_preprocessing as pr
 import numpy as np
 import os
+from tensorflow.contrib import learn
 
 #convert input data to word vector representation using word2vec trained Google model
 def data_word2vec_MR():
@@ -54,6 +55,48 @@ def data_word2vec(sentences):
 
     return word_vectors
 
+def load_word_dataset(dataPosPath, dataNegPath):
+    data_x, labels = pr.load_data_and_labels(dataPosPath, dataNegPath)
+
+    # Build vocabulary
+    max_review_length = max([len(x.split(" ")) for x in data_x])
+    vocab_processor = learn.preprocessing.VocabularyProcessor(max_review_length)
+    x = np.array(list(vocab_processor.fit_transform(data_x)))
+
+    return (splitData(x, labels, 0.1, 0.1), max_review_length)
+
+def make_wordvec_dictionary(filename_vec):
+    sentences = np.load(filename_vec)
+
+    #make word list from sentences
+    #in the same time find max dimension of sentence
+    max_dim = 0
+    words = []
+    for sent in sentences:
+        if max_dim < sent.shape[0]:
+            max_dim = sent.shape[0]
+        for word in sent:
+            words.append(word)
+    words_array = np.vstack(words)
+
+    #make dictionary of unique words
+    unique_dict = np.unique(words_array, axis=0)
+
+    #add zero line to dict, indicating a padded word with all zeros
+    padded_word = np.zeros(300)
+    unique_dict = np.vstack((padded_word, unique_dict))
+
+    coded_sentences = np.zeros((np.shape(sentences)[0], max_dim))
+    for i,sent in enumerate(sentences):
+        coded_sent = np.zeros(max_dim)
+        for j,word in enumerate(sent):
+            idx = np.where((unique_dict == word).all(axis=1))
+            coded_sent[j] = idx[0]
+        coded_sentences[i] = coded_sent
+
+
+    return unique_dict
+
 def load_data(filename_vec, filename_labels):
     # load files with vectors and labels and split into training and testing
     vectors = np.load(filename_vec)
@@ -70,10 +113,10 @@ def load_data(filename_vec, filename_labels):
     labels = labels_vec.astype(int)
 
     #find maximum sentence size
-    sizes = []
-    for i in range(len(vectors)):
-        sizes.append(vectors[i].shape[0])
-    max_dim = max(sizes)
+    max_dim = 0
+    for sent in vectors:
+        if (np.shape(sent)[0] > max_dim):
+            max_dim = np.shape(sent)[0]
 
     #zero padding each matrix to the maximum height
     #each element of vectors is a matrix (max_sentence_length, vocabulary_length)
@@ -98,7 +141,7 @@ def load_data(filename_vec, filename_labels):
 
     flatten_vectors = np.float32(flatten_vectors)
 
-    return splitData(flatten_vectors,labels,0.1,0.1)
+    return (splitData(flatten_vectors,labels,0.1,0.1), max_dim)
 
 def saveWordVecsAndLabels(wordVecs,labels,name):
     np.save('wordVec'+name, wordVecs)  # save wordVecs to file
