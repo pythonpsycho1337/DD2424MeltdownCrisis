@@ -32,8 +32,8 @@ def main():
 
     log = []
     for i in range(1,8):
-        input("Starting "+str(i)+" press enter to continue")
-        trainingParams = {"TrainPercent":0.9,"LearningRateInit":0.1,"LearningDecay":0.95,"Dropout":0.5,"BatchSize":50,"Epochs":1,"Steps":10}
+        #input("Starting "+str(i)+" press enter to continue")
+        trainingParams = {"TrainPercent":0.9,"LearningRateInit":0.1,"LearningDecay":0.95,"Dropout":0.5,"BatchSize":50,"Epochs":1,"Steps":2000}
         modelParams = {"FilterSizes":[i, i+1, i+2],"NumFilters":100,"l2Reg":0.1,"DenseUnits":100,"Rho":0.9}
         params = {"TrainingParams":trainingParams,"ModelParams":modelParams}
         modelDir = os.path.join("ckpt","VaryingFilterSizes",paramsTodirName(params))
