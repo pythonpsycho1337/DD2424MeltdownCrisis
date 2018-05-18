@@ -43,7 +43,7 @@ def cnn_basic(features, labels, mode, params):
   # if (global_step.value == 0):
   new_trainable_list = get_trainable_list('ckpt/')
 
-  """Model function for CNN."""  #input image size (46,300) - one channel
+  """Model function for CNN."""
   feature_shape = features['x'].get_shape()
   feature_width = feature_shape[1].value
   # Input Layer
