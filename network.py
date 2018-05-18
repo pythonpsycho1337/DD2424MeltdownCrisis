@@ -79,7 +79,7 @@ def cnn_basic(features, labels, mode, params):
   adaptive_learning_rate = tf.train.exponential_decay(LEARNING_RATE_INIT, global_step,
                                                         100, LEARNING_DECAY, staircase=True)
   loss = tf.losses.sparse_softmax_cross_entropy(labels=labels, logits=logits)
-  tf.summary.histogram("loss", loss)
+  #tf.summary.histogram("loss", loss)
   # Configure the Training Op (for TRAIN mode)
   if mode == tf.estimator.ModeKeys.TRAIN:
       #print("Loss:"+str(loss))

@@ -13,7 +13,7 @@ import network
 
 def train(trainingSet, validationSet,modelDir,params):
     # Create the Estimator
-    run_config = tf.estimator.RunConfig(save_checkpoints_steps=10).replace(
+    run_config = tf.estimator.RunConfig(save_checkpoints_steps=10, save_summary_steps=10).replace(
         session_config=tf.ConfigProto(log_device_placement=True))
 
     text_classifier = tf.estimator.Estimator(
@@ -58,5 +58,5 @@ def train(trainingSet, validationSet,modelDir,params):
 
     print("\nValidation Accuracy: {0:f}\n".format(accuracy_score))
 
-    return text_classifier
+    return accuracy_score
 
