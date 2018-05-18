@@ -21,7 +21,7 @@ def train(trainingSet, validationSet,modelDir,params):
 
     # Set up logging for predictions
     # Log the values in the "Softmax" tensor with label "probabilities"
-    tensors_to_log = {"probabilities": "softmax_tensor"}
+    tensors_to_log = {"probabilities": "softmax_tensor","loss":"loss"}
     logging_hook = tf.train.LoggingTensorHook(
         tensors=tensors_to_log, every_n_iter=1)
 
@@ -47,7 +47,7 @@ def train(trainingSet, validationSet,modelDir,params):
     eval_input_fn = tf.estimator.inputs.numpy_input_fn(
         x={'x': validation_features},
         y=validation_labels,
-        num_epochs=10,
+        num_epochs=1,
         shuffle=False)
 
     # Evaluate accuracy.

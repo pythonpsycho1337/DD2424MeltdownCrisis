@@ -54,7 +54,7 @@ def cnn_basic(features, labels, mode, params):
 
   # Dense Layer for the dropout,
   dense = tf.layers.dense(inputs=reshape_output, units=modelParams['DenseUnits'], activation=tf.nn.relu,
-                          activity_regularizer=tf.contrib.layers.l2_regularizer(3.0))
+                          activity_regularizer=tf.contrib.layers.l2_regularizer(0.5))
   dropout = tf.layers.dropout(
       inputs=dense, rate=DROPOUT, training=mode == tf.estimator.ModeKeys.TRAIN)  # dropout rate
 
