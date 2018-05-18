@@ -8,8 +8,8 @@ class Training_Parameters:
         self.LEARNING_RATE_INIT = 0.1
         self.LEARNING_DECAY = 0.95
         self.DROPOUT = 0.5
-        self.BATCH_SIZE = 50
-        self.EPOCHS = 5
+        self.BATCH_SIZE = 200
+        self.EPOCHS = 2
         self.STEPS = 1 #2000
 
 training_params = Training_Parameters()

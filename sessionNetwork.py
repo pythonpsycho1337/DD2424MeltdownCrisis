@@ -11,24 +11,22 @@ class CNN_nonstatic:
     def __init__(self, max_sentence_length, word2vec_array):
 
         #define placeholders
-        self.batchX = tf.placeholder(tf.float32, [None, max_sentence_length, data_params.VOCAB_SIZE, 1])
+        self.batchX = tf.placeholder(tf.int32, [None, max_sentence_length])
         self.batchY = tf.placeholder(tf.int64, [None, 2])
-        #self.dropout_keep_prob = tf.placeholder(tf.float32, name="dropout_keep_prob")
 
         ######define network
 
         # Embedding layer
-        # with tf.device('/cpu:0'), tf.name_scope("embedding"):
-        #     self.W = tf.Variable(tf.convert_to_tensor(word2vec_array, np.float32), name="W")
-        #     self.embedded_chars = tf.nn.embedding_lookup(self.W, self.batchX)
-        #     self.embedded_chars_expanded = tf.expand_dims(self.embedded_chars, -1)
-
+        with tf.device('/cpu:0'), tf.name_scope("embedding"):
+             self.W = tf.Variable(tf.convert_to_tensor(word2vec_array, np.float32), name="W")
+             self.embedded_chars = tf.nn.embedding_lookup(self.W, self.batchX)
+             self.embedded_chars_expanded = tf.expand_dims(self.embedded_chars, -1)
 
         # define each group of filters
         layer_output = []
         for filter_height in network_params.FILTER_SIZES:
             conv = tf.layers.conv2d(
-                inputs=  self.embedded_chars_expanded, #########
+                inputs=  self.embedded_chars_expanded,
                 filters=network_params.NUM_FILTERS,
                 kernel_size=(filter_height, data_params.VOCAB_SIZE),  # width of filter equals to the wordvec dimension
                 padding="same",
@@ -49,7 +47,7 @@ class CNN_nonstatic:
 
         # Dense Layer for the dropout,
         dense = tf.layers.dense(inputs=reshape_output, units=network_params.DENSE_UNITS, activation=tf.nn.relu,
-                                activity_regularizer=tf.contrib.layers.l2_regularizer(3.0))
+                                activity_regularizer=tf.contrib.layers.l2_regularizer(0.5))
         dropout = tf.layers.dropout(
             inputs=dense, rate=training_params.DROPOUT)  # dropout rate
 

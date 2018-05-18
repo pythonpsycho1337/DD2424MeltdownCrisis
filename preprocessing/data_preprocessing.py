@@ -42,17 +42,17 @@ def load_data_and_labels(positive_data_file, negative_data_file):
     negative_labels = [[1, 0] for _ in negative_examples]
     y_onehot = np.concatenate([positive_labels, negative_labels], 0)
 
-    # transform labels to 1 column from 2 columns (labels is 0 or 1)
-    labels_vec = np.zeros(( y_onehot.shape[0]))
-    for i in range( y_onehot.shape[0]):
-        if ( y_onehot[i, 0] != 0):
-            labels_vec[i] = 0
-        else:
-            labels_vec[i] = 1
+    ## transform labels to 1 column from 2 columns (labels is 0 or 1)
+    #labels_vec = np.zeros(( y_onehot.shape[0]))
+    #for i in range( y_onehot.shape[0]):
+    #    if ( y_onehot[i, 0] != 0):
+    #        labels_vec[i] = 0
+    #    else:
+    #        labels_vec[i] = 1
+#
+    #labels = labels_vec.astype(int)
 
-    labels = labels_vec.astype(int)
-
-    return [x_text, labels]
+    return [x_text, y_onehot]
 
 def clean_str(string):
     """
