@@ -78,12 +78,10 @@ def cnn_basic(features, labels, mode, params):
   global_step = tf.Variable(0, trainable=False)
   adaptive_learning_rate = tf.train.exponential_decay(LEARNING_RATE_INIT, global_step,
                                                         100, LEARNING_DECAY, staircase=True)
-
+  loss = tf.losses.sparse_softmax_cross_entropy(labels=labels, logits=logits)
+  tf.summary.histogram("loss", loss)
   # Configure the Training Op (for TRAIN mode)
   if mode == tf.estimator.ModeKeys.TRAIN:
-
-      loss = tf.losses.sparse_softmax_cross_entropy(labels=labels, logits=logits)
-      tf.summary.histogram("loss", loss)
       #print("Loss:"+str(loss))
       optimizer = tf.train.AdadeltaOptimizer(learning_rate=adaptive_learning_rate, rho=modelParams['Rho'])
       train_op = optimizer.minimize(
@@ -94,9 +92,6 @@ def cnn_basic(features, labels, mode, params):
 
   # Configure the Training Op (for EVAL mode)
   elif mode == tf.estimator.ModeKeys.EVAL:
-
-      loss = tf.losses.sparse_softmax_cross_entropy(labels=labels, logits=logits)
-      tf.summary.histogram("loss", loss)
       eval_metric_ops = {
         "accuracy": tf.metrics.accuracy(
             labels=labels, predictions=predictions["classes"])}
