@@ -24,7 +24,9 @@ def main():
     # data, max_sentence_length = wordvec.load_data(wordvecPath,labelsPath)
     # unique_dict = wordvec.make_wordvec_dictionary(wordvecPath)
     data, max_sentence_length, unique_word_dictionary = wordvec.load_word_dataset(dataPosPath, dataNegPath)
-    word2vec_dictionary = make_word2vec_dictionary(unique_word_dictionary)
+    #this function was used once to save teh dictionary, we do not need to use it again
+    # wordvec.save_word2vec_dictionary(unique_word_dictionary)
+    word2vec_dictionary = wordvec.load_obj("/preprocessing/wordvectors_polarity/", "word2vecDict")
     train_features = data[0]
     train_labels = data[1]
     val_features = data[2]

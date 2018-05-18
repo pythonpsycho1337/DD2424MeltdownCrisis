@@ -3,6 +3,17 @@ from preprocessing import data_preprocessing as pr
 import numpy as np
 import os
 from tensorflow.contrib import learn
+import pickle
+
+def save_obj(folder, obj, name):
+    curpath = os.path.abspath(os.curdir)
+    with open(curpath + folder + name + '.pkl', 'wb') as f:
+        pickle.dump(obj, f, pickle.HIGHEST_PROTOCOL)
+
+def load_obj(folder, name):
+    curpath = os.path.abspath(os.curdir)
+    with open(curpath + folder + name + '.pkl', 'rb') as f:
+        return pickle.load(f)
 
 #convert input data to word vector representation using word2vec trained Google model
 def data_word2vec_MR():
@@ -76,8 +87,22 @@ def load_word_dataset(dataPosPath, dataNegPath):
 
     return (splitData(x, labels, 0.1, 0.1), max_review_length, unique_words_dict)
 
-def make_word2vec_dictionary(unique_word_dictionary):
-    return 5
+def save_word2vec_dictionary(unique_word_dictionary):
+    model = gensim.models.KeyedVectors.load_word2vec_format('GoogleNews-vectors-negative300.bin', binary=True)
+    wordvec_size = model.vector_size  # vector size is 300 (num of words used from google vocabulary)
+
+    word2vec_dict = {}
+    for key, value in unique_word_dictionary.items():
+        # check if word not found in dictionary
+        if (key in model.vocab.keys()):
+            idx = int(model.vocab[key].index)
+            wordvec = model.vectors[idx]
+        else:
+            #word does not exist, initialize randomly
+            wordvec = np.random.uniform(-1.0, 1.0, wordvec_size)
+        word2vec_dict.update({value:wordvec})
+
+    save_obj("/preprocessing/wordvectors_polarity/", word2vec_dict, "word2vecDict")
 
 
 def make_wordvec_dictionary(filename_vec):
