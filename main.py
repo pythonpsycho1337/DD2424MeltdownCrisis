@@ -30,16 +30,17 @@ def main():
 
     print("succesfully loaded "+dataset+" dataset")
 
-    trainingParams = {"TrainPercent":0.9,"LearningRateInit":0.1,"LearningDecay":0.95,"Dropout":0.5,"BatchSize":50,"Epochs":1,"Steps":20}
-    modelParams = {"FilterSizes":[3, 4, 5],"NumFilters":100,"l2Reg":0.1,"DenseUnits":100,"Rho":0.9}
-    params = {"TrainingParams":trainingParams,"ModelParams":modelParams}
-    modelDir = os.path.join("ckpt",paramsTodirName(params))
-
-    valAcc = train((train_features,train_labels),(val_features,val_labels), modelDir,params)
-    testAcc = test_network((test_features, test_labels), modelDir,params)
-    log = {"valAcc":valAcc,"testAcc":testAcc,"trainingParams":trainingParams,"modelParams":modelParams}
-    f = open("Log.pkl","wb")
-    pickle.dump(log,f)
+    f = open("Log.pkl", "wb")
+    log = []
+    for i in range(1,8):
+        trainingParams = {"TrainPercent":0.9,"LearningRateInit":0.1,"LearningDecay":0.95,"Dropout":0.5,"BatchSize":50,"Epochs":1,"Steps":10}
+        modelParams = {"FilterSizes":[i, i+1, i+2],"NumFilters":100,"l2Reg":0.1,"DenseUnits":100,"Rho":0.9}
+        params = {"TrainingParams":trainingParams,"ModelParams":modelParams}
+        modelDir = os.path.join("ckpt","VaryingFilterSizes",paramsTodirName(params))
+        valAcc = train((train_features,train_labels),(val_features,val_labels), modelDir,params)
+        testAcc = test_network((test_features, test_labels), modelDir,params)
+        log.append({"valAcc":valAcc,"testAcc":testAcc,"trainingParams":trainingParams,"modelParams":modelParams})
+        pickle.dump(log,f)
     f.close()
 
 def paramsTodirName(params):
