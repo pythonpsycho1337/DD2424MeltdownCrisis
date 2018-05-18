@@ -82,7 +82,7 @@ def train(training_set, validation_set, max_sentence_length, word2vec_dictionary
 
                 loss_epoch += loss  # compute total loss over all batches
 
-            return (loss_epoch, accuracy)
+            return (step, loss_epoch, accuracy)
 
         ####iterate thourgh epochs
         for epoch in range(training_params.EPOCHS):
@@ -106,7 +106,7 @@ def train(training_set, validation_set, max_sentence_length, word2vec_dictionary
                 print("Saved model checkpoint to {}\n".format(path))
 
             #validate every a number of epochs
-            if current_step % 10 == 0:
+            if epoch % 5 == 0:
 
                 # shuffle validation set
                 (shuffled_features_val, shuffled_labels_val) = shuffle_set(validation_set)

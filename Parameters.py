@@ -8,8 +8,8 @@ class Training_Parameters:
         self.LEARNING_RATE_INIT = 0.1
         self.LEARNING_DECAY = 0.95
         self.DROPOUT = 0.5
-        self.BATCH_SIZE = 200
-        self.EPOCHS = 2
+        self.BATCH_SIZE = 50
+        self.EPOCHS = 20
         self.STEPS = 1 #2000
 
 training_params = Training_Parameters()
@@ -23,7 +23,7 @@ class Model_Parameters:
 
         self.FILTER_SIZES = [3,4,5]
         self.NUM_FILTERS = 100
-        self.L2_REG = 3
+        self.L2_REG = 0.5
         self.DENSE_UNITS = 100
         self.RHO = 0.9
         self.NUM_FILTER_GROUPS = 3

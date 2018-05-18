@@ -47,7 +47,7 @@ class CNN_nonstatic:
 
         # Dense Layer for the dropout,
         dense = tf.layers.dense(inputs=reshape_output, units=network_params.DENSE_UNITS, activation=tf.nn.relu,
-                                activity_regularizer=tf.contrib.layers.l2_regularizer(0.5))
+                                activity_regularizer=tf.contrib.layers.l2_regularizer(network_params.L2_REG))
         dropout = tf.layers.dropout(
             inputs=dense, rate=training_params.DROPOUT)  # dropout rate
 
@@ -61,7 +61,7 @@ class CNN_nonstatic:
 
         #calculate cross entropy loss
         losses = tf.nn.softmax_cross_entropy_with_logits(logits=logits, labels=self.batchY)
-        self.loss = tf.reduce_mean(losses)   ##todo add regularization
+        self.loss = tf.reduce_mean(losses)
 
         # Accuracy
         correct_predictions = tf.equal(self.predictions["classes"], tf.argmax(self.batchY, 1))
