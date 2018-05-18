@@ -51,12 +51,12 @@ def train(trainingSet, validationSet,modelDir,params):
         shuffle=False)
 
     # Evaluate accuracy.
-    accuracy_score = text_classifier.evaluate(input_fn=eval_input_fn)["accuracy"]
-    np.save(os.path.join(modelDir,'validation_accuracy'), accuracy_score)
+    valAcc = text_classifier.evaluate(input_fn=eval_input_fn)["accuracy"]
+    np.save(os.path.join(modelDir,'validation_accuracy'), valAcc)
 
-    tf.summary.scalar("validationAcc",accuracy_score)
+    tf.summary.scalar("validationAcc",valAcc)
 
-    print("\nValidation Accuracy: {0:f}\n".format(accuracy_score))
+    print("\nValidation Accuracy: {0:f}\n".format(valAcc))
 
-    return accuracy_score
+    return valAcc
 

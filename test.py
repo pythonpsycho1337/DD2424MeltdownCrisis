@@ -33,7 +33,9 @@ def test_network( testSet, modelDir,params):
         y=test_labels,
         num_epochs=1,
         shuffle=False)
-    accuracy_score = classifier.evaluate(input_fn=eval_input_fn)["accuracy"]
-    np.save(os.path.join(modelDir,'testing_accuracy'), accuracy_score)
+    testAcc = classifier.evaluate(input_fn=eval_input_fn)["accuracy"]
+    np.save(os.path.join(modelDir,'testing_accuracy'), testAcc)
+    tf.summary.scalar("testAcc", testAcc)
 
-    print("\nAccuracy on test set: {0:f}\n".format(accuracy_score))
+    print("\nAccuracy on test set: {0:f}\n".format(testAcc))
+    return testAcc
