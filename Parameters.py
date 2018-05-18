@@ -40,7 +40,7 @@ network_params = Model_Parameters()
 class Data_Parameters:
 
     def __init__(self):
-        self.MAX_SENTENCE_SIZE = 46  #maximum sentence length
+        # self.MAX_SENTENCE_SIZE = 46  #maximum sentence length
         self.NUM_CLASSES = 2
         self.VOCAB_SIZE = 300
 

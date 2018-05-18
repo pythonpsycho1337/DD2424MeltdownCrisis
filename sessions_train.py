@@ -9,21 +9,22 @@ from preprocessing.data_preprocessing import load_data_and_labels
 from preprocessing.word2vec_access_vector import splitData
 
 import time
-import os
 import argparse
 import os
 import shutil
 import numpy as np
 import datetime
+import preprocessing.word2vec_access_vector as wordvec
 
-def train(training_set, validation_set):
+
+def train(training_set, validation_set, max_sentence_length, word2vec_dictionary):
 
 
     session_conf = tf.ConfigProto(allow_soft_placement=True,log_device_placement=True)
     sess = tf.Session(config=session_conf)
     with sess.as_default():
 
-        cnn_nonstatic = CNN_nonstatic() #define network graph
+        cnn_nonstatic = CNN_nonstatic(max_sentence_length, word2vec_dictionary) #define network graph
 
         ####define optimizer
         # adaptive learning rate - exponential decay
@@ -99,15 +100,32 @@ def train(training_set, validation_set):
 
 
 def main(argv=None):
+    dataset = "MR"
+    if dataset == "MR":
+        dataPosPath = "preprocessing/wordvectors_polarity/rt-polarity.pos"
+        dataNegPath = "preprocessing/wordvectors_polarity/rt-polarity.neg"
+    else:
+        print("Could not find data for the dataset " + dataset)
 
-    (vec_matrix, label_matrix) = prepare_data()
+    data, max_sentence_length, unique_word_dictionary = wordvec.load_word_dataset(dataPosPath, dataNegPath)
+    train_split = data[0:2]
+    val_split = data[2:4]
+    test_split = data[4:6]
 
-    split = splitData(vec_matrix, label_matrix, 0.1, 0.1)
-    train_split = split[0:2]
-    val_split = split[2:4]
-    test_split = split[4:6]
 
-    train(train_split, val_split)
+    word2vec_dictionary = wordvec.load_obj("/preprocessing/wordvectors_polarity/", "word2vecDict")
+    word2vec_array = np.zeros((18758,300))
+    for k, v in word2vec_dictionary.items():
+        word2vec_array[k] = v
+
+    # evi's code
+    # (vec_matrix, label_matrix) = prepare_data()
+    # split = splitData(vec_matrix, label_matrix, 0.1, 0.1)
+    # train_split = split[0:2]
+    # val_split = split[2:4]
+    # test_split = split[4:6]
+
+    train(train_split, val_split, max_sentence_length, word2vec_array)
 
 def shuffle_set(data): #(features, labels) shuffle train or validation set
 

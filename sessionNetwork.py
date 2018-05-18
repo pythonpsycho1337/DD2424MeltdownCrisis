@@ -2,31 +2,40 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
-from Parameters import *
 import tensorflow as tf
+import numpy as np
+
+from Parameters import *
 
 class CNN_nonstatic:
-    def __init__(self):
+    def __init__(self, max_sentence_length, word2vec_array):
 
         #define placeholders
-        self.batchX = tf.placeholder(tf.float32, [None, data_params.MAX_SENTENCE_SIZE, data_params.VOCAB_SIZE, 1])
+        self.batchX = tf.placeholder(tf.float32, [None, max_sentence_length, data_params.VOCAB_SIZE, 1])
         self.batchY = tf.placeholder(tf.int64, [None, 2])
         #self.dropout_keep_prob = tf.placeholder(tf.float32, name="dropout_keep_prob")
 
         ######define network
 
+        # Embedding layer
+        # with tf.device('/cpu:0'), tf.name_scope("embedding"):
+        #     self.W = tf.Variable(tf.convert_to_tensor(word2vec_array, np.float32), name="W")
+        #     self.embedded_chars = tf.nn.embedding_lookup(self.W, self.batchX)
+        #     self.embedded_chars_expanded = tf.expand_dims(self.embedded_chars, -1)
+
+
         # define each group of filters
         layer_output = []
         for filter_height in network_params.FILTER_SIZES:
             conv = tf.layers.conv2d(
-                inputs=  self.batchX, #########
+                inputs=  self.embedded_chars_expanded, #########
                 filters=network_params.NUM_FILTERS,
                 kernel_size=(filter_height, data_params.VOCAB_SIZE),  # width of filter equals to the wordvec dimension
                 padding="same",
                 activation=tf.nn.relu)
 
             # max over time pooling
-            pooling = tf.nn.max_pool(conv, ksize=[1, data_params.MAX_SENTENCE_SIZE - filter_height + 1, 1, 1],
+            pooling = tf.nn.max_pool(conv, ksize=[1, max_sentence_length - filter_height + 1, 1, 1],
                                      strides=[1, 1, 1, 1],
                                      padding='VALID',
                                      name="pool")
