@@ -3,34 +3,13 @@ from __future__ import division
 from __future__ import print_function
 
 import tensorflow as tf
-from testing_env import network_params
+
 from Parameters import training_params
+from Parameters import network_params
+
 
 
 tf.logging.set_verbosity(tf.logging.INFO)
-
-def get_trainable_list(modeldir):
-
-    #load latest checkpoint file
-    #latest_ckpt_file = estimator_obj.latest_checkpoint()
-    checkpoint = tf.train.get_checkpoint_state(modeldir) #, latest_filename=latest_ckpt_file)
-    chosen_graph = 'ckpt/model.ckpt-1.meta'
-    with tf.Session() as sess:
-        saver = tf.train.import_meta_graph(chosen_graph)
-        saver.restore(sess, checkpoint.model_checkpoint_path)
-
-        trainable_vars = tf.get_collection(tf.GraphKeys.TRAINABLE_VARIABLES)
-
-        print('TRAINABLE VARIABLES!!!!')
-        print(trainable_vars)
-
-        #fd = open("vars.pkl","w")
-        #for var in trainable_vars:
-        #    fd.write(str(var))
-        sess.close()
-
-
-    return trainable_vars
 
 
 #basic CNN network with one channel
@@ -51,9 +30,10 @@ def cnn_basic(features, labels, mode, params):
   print('max sentence size: ', max_sentence_size)
   vocab_size = 300  #wordvec dimensions
 
-  #input_variable = tf.get_variable("input", initializer=features['x'], validate_shape=False, trainable=False)
+
+  #input_variable = tf.get_variable("input_variable", initializer=features['x'], validate_shape=False, trainable=False)
   input_layer = tf.reshape(features['x'], [-1, max_sentence_size, vocab_size, 1])
-  # input_variable = tf.Variable(input_layer, trainable=True, validate_shape=False)
+
 
 
   #define each group of filters
@@ -103,6 +83,7 @@ def cnn_basic(features, labels, mode, params):
 
 
   # adaptive learning rate - exponential decay
+  global_step = tf.Variable(0, trainable=False)
   adaptive_learning_rate = tf.train.exponential_decay(training_params.LEARNING_RATE_INIT, global_step,
                                                         100, training_params.LEARNING_DECAY, staircase=True)
 
@@ -113,12 +94,19 @@ def cnn_basic(features, labels, mode, params):
       tf.summary.histogram("trainingLoss", loss)
       #print("Loss:"+str(loss))
 
-      # new_trainable_list = get_trainable_list('ckpt') #.append(input_variable)
+
+      #create list of tf.Variables from input param
+      trainable_list = []
+      for dict in params:
+          with tf.variable_scope(dict['scope'], reuse=tf.AUTO_REUSE):
+            var = tf.get_variable(dict['name'], dict['shape'], dict['dtype'])
+          trainable_list.append(var)
+
 
       optimizer = tf.train.AdadeltaOptimizer(learning_rate=adaptive_learning_rate, rho=network_params.RHO)
       train_op = optimizer.minimize(
             loss=loss,
-            var_list=new_trainable_list,
+            var_list=trainable_list,
             global_step=tf.train.get_global_step())
 
       return tf.estimator.EstimatorSpec(mode=mode, loss=loss, train_op=train_op)

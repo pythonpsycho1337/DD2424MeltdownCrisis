@@ -3,7 +3,6 @@ from __future__ import division
 from __future__ import print_function
 
 import preprocessing.word2vec_access_vector as wordvec
-
 from train import train
 import sys
 #from testing_env import hyperparameter_optimization
