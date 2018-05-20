@@ -40,7 +40,8 @@ def cnn_basic(features, labels, mode, params):
           activation=tf.nn.tanh)
 
       # max over time pooling
-      pooling = tf.nn.max_pool(conv, ksize=[1, max_sentence_size - filter_height + 1, 1, 1],
+      pooling = tf.nn.max_pool(conv,
+                               ksize=[1, max_sentence_size - filter_height + 1, 1, 1],
                                strides=[1, 1, 1, 1],
                                padding='VALID',
                                name="pool")

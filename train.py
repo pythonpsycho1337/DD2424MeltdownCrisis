@@ -43,7 +43,7 @@ def train(trainingSet, validationSet,modelDir,params):
     #also passes the steps of the training and what we want to be logged as info in the standard output
     text_classifier.train(
         input_fn=train_input_fn,
-        steps=params["TrainingParams"]["Steps"],
+        steps=None, #will be defined by input function
         hooks=[logging_hook])
 
     # Evaluate the model on validation set and print results
