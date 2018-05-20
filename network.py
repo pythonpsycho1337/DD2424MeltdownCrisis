@@ -18,13 +18,13 @@ def cnn_basic(features, labels, mode, params):
   LEARNING_DECAY = params["TrainingParams"]["LearningDecay"]
 
   """Model function for CNN."""
-  feature_shape = features['x'].get_shape()
-  feature_width = feature_shape[1].value
+  batch_shape = features['x'].get_shape()
+  batch_width = batch_shape[1].value
 
   # Input Layer
-  max_sentence_size =int(feature_width/ 300)	  #max sentence size
+  word_vector_size = 300  # wordvec dimensions
+  max_sentence_size =int(batch_width/ word_vector_size)#batch width = max_sentence_size * word_vector_size
   print('max sentence size: ', max_sentence_size)
-  word_vector_size = 300  #wordvec dimensions
 
   input_layer = tf.reshape(features['x'], [-1, max_sentence_size, word_vector_size, 1])
 
@@ -37,7 +37,7 @@ def cnn_basic(features, labels, mode, params):
           filters=modelParams['NumFilters'],
           kernel_size = (filter_height, word_vector_size), #width of filter equals to the wordvec dimension
           padding="same",
-          activation=tf.nn.relu)
+          activation=tf.nn.tanh)
 
       # max over time pooling
       pooling = tf.nn.max_pool(conv, ksize=[1, max_sentence_size - filter_height + 1, 1, 1],
@@ -83,7 +83,7 @@ def cnn_basic(features, labels, mode, params):
   # Configure the Training Op (for TRAIN mode)
   if mode == tf.estimator.ModeKeys.TRAIN:
       #print("Loss:"+str(loss))
-      optimizer = tf.train.AdadeltaOptimizer(learning_rate=adaptive_learning_rate, rho=modelParams['Rho'])
+      optimizer = tf.train.MomentumOptimizer(learning_rate=adaptive_learning_rate, momentum=0.9)
       train_op = optimizer.minimize(
             loss=loss,
             global_step=tf.train.get_global_step())
