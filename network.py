@@ -17,16 +17,16 @@ def cnn_basic(features, labels, mode, params):
   LEARNING_RATE_INIT = params["TrainingParams"]["LearningRateInit"]
   LEARNING_DECAY = params["TrainingParams"]["LearningDecay"]
 
-  """Model function for CNN."""  #input image size (46,300) - one channel
+  """Model function for CNN."""
   feature_shape = features['x'].get_shape()
   feature_width = feature_shape[1].value
 
   # Input Layer
   max_sentence_size =int(feature_width/ 300)	  #max sentence size
   print('max sentence size: ', max_sentence_size)
-  vocab_size = 300  #wordvec dimensions
+  word_vector_size = 300  #wordvec dimensions
 
-  input_layer = tf.reshape(features['x'], [-1, max_sentence_size, vocab_size, 1])
+  input_layer = tf.reshape(features['x'], [-1, max_sentence_size, word_vector_size, 1])
 
   #define each group of filters
   layer_output = []
@@ -35,7 +35,7 @@ def cnn_basic(features, labels, mode, params):
       conv = tf.layers.conv2d(
           inputs=input_layer,
           filters=modelParams['NumFilters'],
-          kernel_size = (filter_height, vocab_size), #width of filter equals to the wordvec dimension
+          kernel_size = (filter_height, word_vector_size), #width of filter equals to the wordvec dimension
           padding="same",
           activation=tf.nn.relu)
 
@@ -50,7 +50,7 @@ def cnn_basic(features, labels, mode, params):
   # concatenate the filter output
   concat_output = tf.concat(layer_output, 1)
   sum_filter_sizes = sum(modelParams["FilterSizes"])
-  reshape_output = tf.reshape(concat_output, [-1, sum_filter_sizes * vocab_size * modelParams['NumFilters']])
+  reshape_output = tf.reshape(concat_output, [-1, sum_filter_sizes * word_vector_size * modelParams['NumFilters']])
 
   # Dense Layer for the dropout,
   dense = tf.layers.dense(inputs=reshape_output, units=modelParams['DenseUnits'], activation=tf.nn.relu,
