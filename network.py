@@ -72,6 +72,7 @@ def cnn_basic(features, labels, mode, params):
   }
 
   if mode == tf.estimator.ModeKeys.PREDICT:
+      print("prediction mode")
       return tf.estimator.EstimatorSpec(mode=mode, predictions=predictions)
 
 
@@ -99,5 +100,5 @@ def cnn_basic(features, labels, mode, params):
 
       return tf.estimator.EstimatorSpec(mode=mode, loss=loss, eval_metric_ops=eval_metric_ops)
   else:
-      print("WARNING: No mode specified for training")
+        print("WARNING: No mode specified for training")
 

@@ -91,7 +91,7 @@ def load_data(filename_vec, filename_labels):
 
     flatten_vectors = np.float32(flatten_vectors)
 
-    return splitData(flatten_vectors,labels,0.1,0.1)
+    return splitData(flatten_vectors,labels,0.2,0.1)
 
 def saveWordVecsAndLabels(wordVecs,labels,name):
     np.save('wordVec'+name, wordVecs)  # save wordVecs to file

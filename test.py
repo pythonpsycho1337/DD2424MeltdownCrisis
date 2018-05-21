@@ -27,6 +27,8 @@ def test_network( testSet, modelDir,params):
     predictions = list(classifier.predict(input_fn=test_input_fn))
     np.save(os.path.join(modelDir,'predictions'), predictions)
 
+    print("prediction is done!")
+
     #Measure the accuracy on the test set by calling the EVALUATE function
     eval_input_fn = tf.estimator.inputs.numpy_input_fn(
         x={'x': test_features},
