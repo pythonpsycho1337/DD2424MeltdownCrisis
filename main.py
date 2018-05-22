@@ -16,7 +16,7 @@ from test import *
 
 def main():
     # dataset takes values "MR" or "Twitter"
-    dataset = "MR"
+    dataset = "Twitter"
     if dataset=="MR":
         wordvecPath = "preprocessing/wordvectors_polarity/wordVecMR.npy"
         labelsPath = "preprocessing/wordvectors_polarity/labelsMR.npy"
@@ -32,14 +32,15 @@ def main():
     print("succesfully loaded "+dataset+" dataset")
 
     log = []
-    num_it = 1
-    print("num_iterations to run: ",num_it )
-    for i in range(10):
+    filterSizes = [[3,3,3],[4,4,4],[5,5,5],[2,3,4],[3,4,5],[4,5,6]]
+    #num_it = 1
+    #print("num_iterations to run: ",num_it )
+    for i in range(len(filterSizes)):
         #input("Starting "+str(i)+" press enter to continue")
 
         #test_percent: 0.2, dev_percent: 0.1
         trainingParams = {"TrainPercent":0.7,"LearningRateInit":0.01,"LearningDecay":0.95,"Dropout":0.5,"BatchSize":50,"Epochs":10}
-        modelParams = {"FilterSizes":[i+1],"NumFilters":100, "DenseUnits":100,"Rho":0.9}
+        modelParams = {"FilterSizes":filterSizes[i],"NumFilters":100, "DenseUnits":100,"Rho":0.9}
         params = {"TrainingParams":trainingParams,"ModelParams":modelParams}
         modelDir = os.path.join("ckpt",dataset,"FilterSizes1to10", paramsTodirName(params))
 
