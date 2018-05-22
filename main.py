@@ -16,7 +16,7 @@ from test import *
 
 def main():
     # dataset takes values "MR" or "Twitter"
-    dataset = "Twitter"
+    dataset = "MR"
     if dataset=="MR":
         wordvecPath = "preprocessing/wordvectors_polarity/wordVecMR.npy"
         labelsPath = "preprocessing/wordvectors_polarity/labelsMR.npy"
@@ -32,7 +32,7 @@ def main():
     print("succesfully loaded "+dataset+" dataset")
 
     log = []
-    filterSizes = [[3,3,3],[4,4,4],[5,5,5],[2,3,4],[3,4,5],[4,5,6]]
+    filterSizes = [[3,3,3],[5,5,5],[7,7,7],[8,8,8],[2,3,4],[4,5,6],[6,7,8],[7,8,9]]
     #num_it = 1
     #print("num_iterations to run: ",num_it )
     for i in range(len(filterSizes)):
