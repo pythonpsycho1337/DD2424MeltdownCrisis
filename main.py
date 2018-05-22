@@ -13,7 +13,6 @@ from train import *
 from test import *
 
 #tf.logging.set_verbosity(tf.logging.INFO)
-
 def main():
     # dataset takes values "MR" or "Twitter"
     dataset = "MR"
