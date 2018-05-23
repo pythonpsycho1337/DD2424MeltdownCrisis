@@ -34,14 +34,14 @@ def main():
     filterSizes = [[3,3,3],[5,5,5],[7,7,7],[8,8,8],[2,3,4],[4,5,6],[6,7,8],[7,8,9]]
     #num_it = 1
     #print("num_iterations to run: ",num_it )
-    for i in range(len(filterSizes)):
+    for i in range(1, 2)):
         #input("Starting "+str(i)+" press enter to continue")
 
         #test_percent: 0.2, dev_percent: 0.1
-        trainingParams = {"TrainPercent":0.7,"LearningRateInit":0.01,"LearningDecay":0.95,"Dropout":0.5,"BatchSize":50,"Epochs":10}
-        modelParams = {"FilterSizes":filterSizes[i],"NumFilters":100, "DenseUnits":100,"Rho":0.9}
+        trainingParams = {"TrainPercent":0.7,"LearningRateInit":0.01,"LearningDecay":0.95,"Dropout":0.5,"BatchSize":50,"Epochs":20}
+        modelParams = {"FilterSizes":[6,7,8],"NumFilters":100, "DenseUnits":100,"Rho":0.9}
         params = {"TrainingParams":trainingParams,"ModelParams":modelParams}
-        modelDir = os.path.join("ckpt",dataset,"FilterSizes1to10", paramsTodirName(params))
+        modelDir = os.path.join("ckpt",dataset,"BEST", paramsTodirName(params))
 
         valAcc = train((train_features,train_labels),(val_features,val_labels), modelDir,params)
         testAcc = test_network((test_features, test_labels), modelDir,params)
