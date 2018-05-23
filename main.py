@@ -34,7 +34,7 @@ def main():
     filterSizes = [[3,3,3],[5,5,5],[7,7,7],[8,8,8],[2,3,4],[4,5,6],[6,7,8],[7,8,9]]
     #num_it = 1
     #print("num_iterations to run: ",num_it )
-    for i in range(1, 2)):
+    for i in range(1, 2):
         #input("Starting "+str(i)+" press enter to continue")
 
         #test_percent: 0.2, dev_percent: 0.1
