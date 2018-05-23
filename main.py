@@ -41,7 +41,7 @@ def main():
         params = {"TrainingParams":trainingParams,"ModelParams":modelParams}
         modelDir = os.path.join("ckpt",dataset,"BEST", paramsTodirName(params))
 
-
+        start = time.time()
         valAcc = train((train_features,train_labels),(val_features,val_labels), modelDir,params)
         testAcc = test_network((test_features, test_labels), modelDir,params)
 
