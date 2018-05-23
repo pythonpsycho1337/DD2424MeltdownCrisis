@@ -6,6 +6,7 @@ import numpy as np
 import os,gensim
 
 from preprocessing import data_preprocessing as pr
+
 #convert input data to word vector representation using word2vec trained Google model
 def data_word2vec_MR():
     path1 = os.path.join(os.getcwd(),"datasets","rt-polaritydata","rt-polarity.neg")
@@ -14,13 +15,6 @@ def data_word2vec_MR():
     wordVecs = data_word2vec(sentences)
     saveWordVecsAndLabels(wordVecs,labels,'MR')
     return wordVecs
-
-def data_word2vec_SST():
-    #Not done
-    data = pr.load_SST('datasets/stanfordSentimentTreebank/datasetSentences.txt',
-                        'datasets/stanfordSentimentTreebank/datasetSplit.txt',
-                       'datasets/stanfordSentimentTreebank/sentiment_labels.txt')
-    return data_word2vec(data)
 
 def data_word2vec_Twitter(includeNeutral):
     #Done
@@ -116,10 +110,9 @@ def splitData(data,labels,testPercent,validationPercent):
 
     return trainingData, trainingLabels, validationData, validationLabels, testData, testLabels
 
-
+#Generate/Preprocess the datasets
 if __name__ == "__main__":
     data = data_word2vec_MR()
-    #data_word2vec_SST()
     data_word2vec_Twitter()
 
 

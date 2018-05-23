@@ -12,10 +12,8 @@ import preprocessing.word2vec_access_vector as wordvec
 from train import *
 from test import *
 
-#tf.logging.set_verbosity(tf.logging.INFO)
 def main():
-    # dataset takes values "MR" or "Twitter"
-    dataset = "Twitter"
+    dataset = "Twitter"#Takes values "MR" or "Twitter"
     if dataset=="MR":
         wordvecPath = "preprocessing/wordvectors_polarity/wordVecMR.npy"
         labelsPath = "preprocessing/wordvectors_polarity/labelsMR.npy"
@@ -31,11 +29,7 @@ def main():
     print("succesfully loaded "+dataset+" dataset")
 
     log = []
-    filterSizes = [[3,3,3],[5,5,5],[7,7,7],[8,8,8],[2,3,4],[4,5,6],[6,7,8],[7,8,9]]
-    numFilters = [50,100,150,200,250,300]
-    #num_it = 1
-    #print("num_iterations to run: ",num_it )
-    for i in range(1, 2):
+    for i in range(1):#For loop is customized for different parameter settings for each experiment
         trainingParams = {"TrainPercent":0.7,"LearningRateInit":0.01,"LearningDecay":0.95,"Dropout":0.5,"BatchSize":50,"Epochs":20}
         modelParams = {"FilterSizes":[6,7,8],"NumFilters":100, "DenseUnits":100,"Rho":0.9}
         params = {"TrainingParams":trainingParams,"ModelParams":modelParams}

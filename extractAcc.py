@@ -1,5 +1,8 @@
-#Extracts validation and test accuracy from logs
+'''
+extractAcc.py - Extracts relevant information from log file and prints it in latex format
+'''
 import pickle,sys
+
 path = sys.argv[1]
 f = open(path,"rb")
 log = pickle.load(f)
