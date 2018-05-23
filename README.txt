@@ -36,10 +36,19 @@ Werkzeug==0.14.1
 
 Operating systems: Ubuntu 16.04
 
-To genereate the preprocessed datasets make sure that the data is located in the correct folder and that you have the wordvec.bin file. Then run "python generate.py" in the terminal.
+static folder:
+    To generate the preprocessed datasets make sure that the data is located in the correct folder and that you have the wordvec.bin file. Then run "python generate.py" in the terminal.
 
-To run an experiment:
-1: Set the dataset variable in main.py
-2: Customize the for-loop in main.py
-3: run "python main.py" in the terminal
+    To run an experiment:
+        1: Set the dataset variable in main.py ("MR" or "Twitter")
+        2: Customize the for-loop in main.py
+        3: run "python main.py" in the terminal
 
+non static folder:
+    first choose between dataset "Twitter" or "MR" by setting the dataset variable in main.py
+    To generate the initial word embedding call wordvec.save_word2vec_dictionary in main.py
+
+    To run an experiment:
+        1: Set the dataset variable in main.py ("MR" or "Twitter")
+        2: Customize the parameters in Parameters.py
+        3: run "python main.py" in the terminal
