@@ -36,7 +36,7 @@ Werkzeug==0.14.1
 
 Operating systems: Ubuntu 16.04
 
-static folder:
+Static architecture(Master branch):
     To generate the preprocessed datasets make sure that the data is located in the correct folder and that you have the wordvec.bin file. Then run "python generate.py" in the terminal.
 
     To run an experiment:
@@ -44,7 +44,7 @@ static folder:
         2: Customize the for-loop in main.py
         3: run "python main.py" in the terminal
 
-non static folder:
+Non-static architecture (Found in non-static Branch):
     first choose between dataset "Twitter" or "MR" by setting the dataset variable in main.py
     To generate the initial word embedding call wordvec.save_word2vec_dictionary in main.py
 
