@@ -3,40 +3,40 @@ The project for the DD2424 course at KTH Spring 2018. In this project sentiment 
 For more information see the report see the report.pdf in the documents directory.
 
 This code was ran with(It might work for other versions but that is not guaranteed):
-Python version 3.6.5
-GCC version 7.2.0
-distro==1.2.0
-docutils==0.14
-gast==0.2.0
-gensim==3.4.0
-google-compute-engine==2.8.1
-grpcio==1.11.0
-html5lib==0.9999999
-idna==2.6
-jmespath==0.9.3
-Markdown==2.6.11
-mkl-fft==1.0.2
-mkl-random==1.0.1
-numpy==1.14.2
-protobuf==3.5.2
-pycosat==0.6.3
-pycparser==2.18
-pyOpenSSL==17.5.0
-PySocks==1.6.8
-python-dateutil==2.7.2
-requests==2.18.4
-ruamel-yaml==0.15.35
-s3transfer==0.1.13
-scipy==1.0.1
-six==1.11.0
-smart-open==1.5.7
-tensorboard==1.7.0
-tensorflow==1.7.0
-tensorflow-tensorboard==1.5.1
-termcolor==1.1.0
-urllib3==1.22
-webencodings==0.5
-Werkzeug==0.14.1
+Python version 3.6.5  
+GCC version 7.2.0  
+distro==1.2.0  
+docutils==0.14  
+gast==0.2.0  
+gensim==3.4.0  
+google-compute-engine==2.8.1  
+grpcio==1.11.0  
+html5lib==0.9999999  
+idna==2.6  
+jmespath==0.9.3  
+Markdown==2.6.11  
+mkl-fft==1.0.2  
+mkl-random==1.0.1  
+numpy==1.14.2  
+protobuf==3.5.2  
+pycosat==0.6.3  
+pycparser==2.18  
+pyOpenSSL==17.5.0  
+PySocks==1.6.8  
+python-dateutil==2.7.2  
+requests==2.18.4  
+ruamel-yaml==0.15.35  
+s3transfer==0.1.13  
+scipy==1.0.1  
+six==1.11.0  
+smart-open==1.5.7  
+tensorboard==1.7.0  
+tensorflow==1.7.0  
+tensorflow-tensorboard==1.5.1  
+termcolor==1.1.0  
+urllib3==1.22  
+webencodings==0.5  
+Werkzeug==0.14.1  
 
 Operating systems: Ubuntu 16.04
 
