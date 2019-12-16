@@ -1,8 +1,8 @@
-# DD2424MeltdownCrisis
-The project for the DD2424 course at KTH Spring 2018. In this project sentiment analysis on Twitter and Movie Reveiews was conducted.
+# Sentiment Analysis
+This repository contains our project for the DD2424 course at KTH, Spring 2018. In this project, sentiment analysis on Twitter and Movie Reveiews was conducted.
 For more information see the report see the report.pdf in the documents directory.
 
-This code was ran with(It might work for other versions but that is not guaranteed):
+This code was executed with(It might work for other versions but that is not guaranteed):
 Python version 3.6.5  
 GCC version 7.2.0  
 distro==1.2.0  
